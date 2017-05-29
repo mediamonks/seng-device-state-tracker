@@ -1,6 +1,6 @@
 import EventDispatcher from 'seng-event/lib/EventDispatcher';
-import { IDeviceState, IMediaQuery } from './IDeviceStateTracker';
 import DeviceStateEvent from './DeviceStateEvent';
+import IMediaQuery from './IMediaQuery';
 
 /**
  * Utility class that tracks which media query is currently active using the
@@ -49,7 +49,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * matching breakpoint. This is usually convenient for mobile-first designs. If you want to reverse
 	 * this order (for desktop-first designs, for example). Pass the reverseDeviceStateOrder boolean as true.
 	 */
-	private _deviceState:IDeviceState;
+	private _deviceState:any;
 
 	/**
 	 * Local private variable to store the device state order.
@@ -65,12 +65,14 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * @param showStateIndicator appends a div with the current state name
 	 */
 	constructor(
-		deviceState:IDeviceState,
 		mediaQueries:IMediaQuery,
+		deviceState:any,
 		reverseDeviceStateOrder:boolean = false,
 		showStateIndicator:boolean = false,
 	) {
 		super();
+
+		this.enumCheck(deviceState);
 
 		this._deviceState = deviceState;
 		this._mediaQueries = mediaQueries;
@@ -81,6 +83,18 @@ export default class DeviceStateTracker extends EventDispatcher {
 		if (showStateIndicator) {
 			this.initStateIndicator();
 		}
+	}
+
+	private enumCheck(deviceState):void {
+		let index = 0;
+
+		Object.keys(deviceState).forEach((key:string) => {
+			// Check order
+			if (parseInt(deviceState[key], 10) !== index) {
+				throw new Error(`[DeviceStateTracker] ${key} should have a valid enum value (number)`);
+			}
+			index += 1;
+		});
 	}
 
 	/**
