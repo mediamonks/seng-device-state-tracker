@@ -1,25 +1,19 @@
-import Example from '../src/lib/Example';
-import IExample from '../src/lib/IExample';
-import {mockExample} from './ExampleMock';
-import {expect} from 'chai';
+import DeviceStateTracker from '../src/lib/DeviceStateTracker';
+import DeviceStateEvent from '../src/lib/DeviceStateEvent';
+import { mediaQueries, DeviceState } from './configMock';
+import { expect } from 'chai';
 import {} from 'mocha';
 
-let example:IExample;
+let deviceStateTracker:DeviceStateTracker;
 
-describe('Example', () =>
-{
-	beforeEach(function()
-	{
-		example = new Example();
+describe('DeviceStateTracker', () => {
+	beforeEach(() => {
+		deviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState);
 	});
 
-	it('should return the correct environment', () =>
-	{
-		expect(example.foo(mockExample)).to.equal('foobar');
-	});
-
-	it('should return the default environment when none has been supplied', () =>
-	{
-		expect(example.foo()).to.equal('baz');
+	it('should return the correct environment', () => {
+		deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, () => {
+			expect(deviceStateTracker.currentState).to.equal(DeviceState.X_SMALL);
+		});
 	});
 });
