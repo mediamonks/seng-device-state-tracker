@@ -1,10 +1,5 @@
-/* tslint:disable:no-unused-variable */
-
-/* tslint:enable:no-unused-variable */
-import {DeviceState, mediaQueries, reverseDeviceStateOrder} from 'app/data/scss-shared/MediaQueries';
-import ThrottleDebounce from 'lib/temple/util/ThrottleDebounce';
-import ko = require('knockout');
-import Destructible from "lib/temple/core/Destructible";
+import { DeviceState, mediaQueries, reverseDeviceStateOrder } from 'app/data/scss-shared/MediaQueries';
+import EventDispatcher from 'seng-event/lib/EventDispatcher';
 
 /**
  * Util class that tracks which media query is currently active using the
@@ -13,11 +8,7 @@ import Destructible from "lib/temple/core/Destructible";
  * The breakpoints are provided in a separate MediaQueries.js file, which is
  * shared with SCSS to generate the corresponding CSS.
  */
-export default class DeviceStateTracker extends Destructible {
-	/**
-	 * Indicating if the browser supports the matchMedia API
-	 */
-	public supportsMatchMedia:boolean = false;
+export default class DeviceStateTracker extends EventDispatcher {
 	/**
 	 * Observable that holds the index of the currently active DeviceState in
 	 * the DeviceState enum in MediaQueries.js.
@@ -51,58 +42,48 @@ export default class DeviceStateTracker extends Destructible {
 	 */
 	private _stateIndicator:HTMLDivElement = null;
 
-	constructor()
-	{
+	constructor() {
 		super();
 
 		this.initTracking();
-		this.currentStateName = ko.computed<string>(() =>
-		{
+		this.currentStateName = ko.computed<string>(() => {
 			var state = this.currentState();
-			if(state === null) {
+			if (state === null) {
 				return null;
 			}
 
 			return this._deviceStateNames[state];
-		}, {pure: true});
+		}, { pure: true });
 	}
 
 	/**
 	 * Initializes tracking of media queries using matchMedia if supported, using
 	 * a state indicator otherwise.
 	 */
-	private initTracking():void
-	{
-		this._deviceStateNames = Object.keys(DeviceState).filter((key) =>
-		{
+	private initTracking():void {
+		this._deviceStateNames = Object.keys(DeviceState).filter((key) => {
 			return isNaN(parseInt(key, 10));
 		});
-		if(window.matchMedia) {
-			this.supportsMatchMedia = true;
-			this.initMatchMedia();
-		}
-		else {
-			this.initStateIndicator();
-		}
+
+		this.initMatchMedia();
+
+		// this.initStateIndicator();
 	}
 
 	/**
 	 * Loops through each deviceState and adds a matchMedia listener for each.
 	 * Calls updateFromMatchMedia_ to initialize the current state.
 	 */
-	private initMatchMedia():void
-	{
-		this._queryLists = this._deviceStateNames.map<MediaQueryList>((stateName) =>
-		{
+	private initMatchMedia():void {
+		this._queryLists = this._deviceStateNames.map<MediaQueryList>((stateName) => {
 			var mediaQuery = mediaQueries[stateName];
-			if(!mediaQuery) {
+			if (!mediaQuery) {
 				throw new Error(`DeviceState ${stateName} not found in the mediaQueries array.`);
 			}
 			return window.matchMedia(mediaQueries[stateName]);
 		});
 
-		this._queryLists.forEach((mql:MediaQueryList) =>
-		{
+		this._queryLists.forEach((mql:MediaQueryList) => {
 			this._queryListMatches.push(mql.matches);
 			mql.addListener(this.handleQueryChange);
 		});
@@ -117,10 +98,9 @@ export default class DeviceStateTracker extends Destructible {
 	 * queries.
 	 * @param changedMql The MediaQueryList that changed
 	 */
-	private handleQueryChange = (changedMql:MediaQueryList):void =>
-	{
+	private handleQueryChange = (changedMql:MediaQueryList):void => {
 		this._queryLists.forEach((mql:MediaQueryList, index:number) => {
-			if(mql.media == changedMql.media) {
+			if (mql.media == changedMql.media) {
 				this._queryListMatches[index] = changedMql.matches;
 			}
 		});
@@ -134,14 +114,13 @@ export default class DeviceStateTracker extends Destructible {
 	 * query. When the reverseDeviceStateOrder boolean is set to true, will
 	 * set the first one in this array.
 	 */
-	private updateFromMatchMedia():void
-	{
+	private updateFromMatchMedia():void {
 		var numQueries = this._queryListMatches.length;
 
-		for(var i = 0; i < numQueries; i++) {
+		for (var i = 0; i < numQueries; i++) {
 			var index = reverseDeviceStateOrder ? i : numQueries - 1 - i;
 
-			if(this._queryListMatches[index]) {
+			if (this._queryListMatches[index]) {
 				this.currentState(index);
 				break;
 			}
@@ -154,15 +133,10 @@ export default class DeviceStateTracker extends Destructible {
 	 * :before pseudo-element. On window resize, we will check the contents
 	 * of the pseudo-element to read the current state.
 	 */
-	private initStateIndicator():void
-	{
+	private initStateIndicator():void {
 		this._stateIndicator = document.createElement('div');
 		this._stateIndicator.className = 'state-indicator';
 		document.body.appendChild(this._stateIndicator);
-
-		$(window).on('resize' + this.eventNamespace,
-			ThrottleDebounce.debounce(this.updateFromStateIndicator,
-				100, this));
 
 		this.updateFromStateIndicator();
 	}
@@ -171,10 +145,8 @@ export default class DeviceStateTracker extends Destructible {
 	 * Called on window resize. Reads the current state from the state indicator
 	 * element. Only used if the matchMedia API is unavailable.
 	 */
-	private updateFromStateIndicator():void
-	{
-		var stateContent = window.getComputedStyle(this._stateIndicator, ':before').
-		getPropertyValue('content');
+	private updateFromStateIndicator():void {
+		var stateContent = window.getComputedStyle(this._stateIndicator, ':before').getPropertyValue('content');
 		var state = parseInt(stateContent.replace(/['"]/g, ''), 10);
 
 		this.currentState(state);
@@ -183,15 +155,11 @@ export default class DeviceStateTracker extends Destructible {
 	/**
 	 * Destruct this DeviceStateTracker instance and remove any event listeners.
 	 */
-	public destruct():void
-	{
-		$(window).off(this.eventNamespace);
-		this._queryLists.forEach((query:MediaQueryList) =>
-		{
+	public destruct():void {
+		this._queryLists.forEach((query:MediaQueryList) => {
 			query.removeListener(this.handleQueryChange);
 		});
-		this._queryLists.length = 0;
 
-		super.destruct();
+		this._queryLists.length = 0;
 	}
 }
