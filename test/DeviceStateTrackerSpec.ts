@@ -4,14 +4,10 @@ import { mediaQueries, DeviceState } from './configMock';
 import { expect } from 'chai';
 import {} from 'mocha';
 
-let deviceStateTracker:DeviceStateTracker;
+const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState);
 
 describe('DeviceStateTracker', () => {
-	beforeEach(() => {
-		deviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState);
-	});
-
-	it('should return the correct environment', () => {
+	it('should return the correct state for X_SMALL', () => {
 		deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, () => {
 			expect(deviceStateTracker.currentState).to.equal(DeviceState.X_SMALL);
 		});

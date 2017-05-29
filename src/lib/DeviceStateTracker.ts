@@ -85,13 +85,28 @@ export default class DeviceStateTracker extends EventDispatcher {
 		}
 	}
 
-	private enumCheck(deviceState):void {
+	/**
+	 * Checks if the enum object is correctly formatted. The DeviceState enum should only contain numeric values in
+	 * a ascending order.
+	 * @param deviceState
+	 */
+	private enumCheck(deviceState:any):void {
 		let index = 0;
+		// Get all the keys of deviceState object
+		const enumValues = Object.keys(deviceState).map(k => deviceState[k]);
+		// Get all the numeric values from enumValues
+		const enumKeys = enumValues.filter(value => typeof value === 'number') as number[];
 
-		Object.keys(deviceState).forEach((key:string) => {
+		// Check if we actually have enum values
+		if (enumKeys.length === 0) {
+			throw new Error(`[DeviceStateTracker] DeviceState object should contain valid enum values`);
+		}
+
+		// Check if enum keys are in a ascending order
+		enumKeys.forEach((key:number) => {
 			// Check order
-			if (parseInt(deviceState[key], 10) !== index) {
-				throw new Error(`[DeviceStateTracker] ${key} should have a valid enum value (number)`);
+			if (key !== index) {
+				throw new Error(`[DeviceStateTracker] DeviceState ${deviceState[key]}: ${key} is not following an ascending order`);
 			}
 			index += 1;
 		});
@@ -116,7 +131,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 		this._queryLists = this._deviceStateNames.map<MediaQueryList>((stateName) => {
 			const mediaQuery:string = this._mediaQueries[stateName];
 			if (!mediaQuery) {
-				throw new Error(`DeviceState ${stateName} not found in the mediaQueries array.`);
+				throw new Error(`[DeviceStateTracker] DeviceState ${stateName} not found in the mediaQueries array.`);
 			}
 			return window.matchMedia(mediaQuery);
 		});
