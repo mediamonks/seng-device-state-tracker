@@ -21,4 +21,13 @@ describe('DeviceStateTracker', () => {
 			expect(stateIndicator).to.equal('DIV');
 		}
 	});
+
+	it('should throw an error while calling construct with wrong enum', () => {
+		expect(() => {
+			new DeviceStateTracker(mediaQueries, WrongDeviceState);
+		}).to.throw(
+			Error,
+			'[DeviceStateTracker] DeviceState LARGE: 4 is not following an ascending order',
+		);
+	});
 });
