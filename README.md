@@ -6,8 +6,7 @@
 
 # seng-device-state-tracker
 
-Add a description here...
-
+DeviceStateTracker is a utility class that tracks which media query is currently active using the matchMedia API.
 
 ## Installation
 
