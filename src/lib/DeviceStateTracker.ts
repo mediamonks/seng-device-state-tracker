@@ -3,10 +3,7 @@ import { IDeviceState, IMediaQuery } from './IDeviceStateTracker';
 
 /**
  * Util class that tracks which media query is currently active using the
- * matchMedia API if available. If not available, it will use a state indicator
- * that updates using CSS.
- * The breakpoints are provided in a separate MediaQueries.js file, which is
- * shared with SCSS to generate the corresponding CSS.
+ * matchMedia API.
  */
 export default class DeviceStateTracker extends EventDispatcher {
 	/**
