@@ -10,55 +10,41 @@ import EventDispatcher from 'seng-event/lib/EventDispatcher';
  */
 export default class DeviceStateTracker extends EventDispatcher {
 	/**
-	 * Observable that holds the index of the currently active DeviceState in
-	 * the DeviceState enum in MediaQueries.js.
+	 * currentState holds the index of the currently active DeviceState.
 	 */
-	public currentState:KnockoutObservable<number> = ko.observable(null);
+	public currentState:number;
 	/**
-	 * Computed observable that holds the name of the currently active state as
-	 * defined in the MediaQueries.js file.
+	 * currentStateName holds the name of the currently active state.
 	 */
-	public currentStateName:KnockoutComputed<string>;
+	public currentStateName:string;
 	/**
-	 * Array of MediaQueryList instances for each device state. Only used if the
-	 * matchMedia API is supported.
+	 * Array of MediaQueryList instances for each device state.
 	 */
 	private _queryLists:Array<MediaQueryList> = [];
 	/**
-	 * Array containing the name of each device state as defined in the
-	 * MediaQueries.js file.
+	 * Array containing the name of each device state.
 	 */
 	private _deviceStateNames:Array<string> = [];
 	/**
 	 * Array containing a boolean for each device state that indicates if the
 	 * media query currently matches. When multiple media queries match, we will
-	 * set the state to the one with the largest index. Only used if the
-	 * matchMedia API is supported.
+	 * set the state to the one with the largest index.
 	 */
 	private _queryListMatches:Array<boolean> = [];
 	/**
-	 * Reference to a state-indicator element that will be used to read the
-	 * currently active breakpoint if the matchMedia API is not supported.
+	 * Reference to a state-indicator element.
 	 */
-	private _stateIndicator:HTMLDivElement = null;
+	private _stateIndicator:HTMLDivElement;
 
 	constructor() {
 		super();
 
+		this.handleQueryChange = this.handleQueryChange.bind(this);
 		this.initTracking();
-		this.currentStateName = ko.computed<string>(() => {
-			var state = this.currentState();
-			if (state === null) {
-				return null;
-			}
-
-			return this._deviceStateNames[state];
-		}, { pure: true });
 	}
 
 	/**
-	 * Initializes tracking of media queries using matchMedia if supported, using
-	 * a state indicator otherwise.
+	 * Initializes tracking of media queries using matchMedia.
 	 */
 	private initTracking():void {
 		this._deviceStateNames = Object.keys(DeviceState).filter((key) => {
@@ -66,8 +52,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 		});
 
 		this.initMatchMedia();
-
-		// this.initStateIndicator();
+		this.initStateIndicator();
 	}
 
 	/**
@@ -76,11 +61,11 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 */
 	private initMatchMedia():void {
 		this._queryLists = this._deviceStateNames.map<MediaQueryList>((stateName) => {
-			var mediaQuery = mediaQueries[stateName];
+			const mediaQuery:string = mediaQueries[stateName];
 			if (!mediaQuery) {
 				throw new Error(`DeviceState ${stateName} not found in the mediaQueries array.`);
 			}
-			return window.matchMedia(mediaQueries[stateName]);
+			return window.matchMedia(mediaQuery);
 		});
 
 		this._queryLists.forEach((mql:MediaQueryList) => {
@@ -98,15 +83,15 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * queries.
 	 * @param changedMql The MediaQueryList that changed
 	 */
-	private handleQueryChange = (changedMql:MediaQueryList):void => {
+	private handleQueryChange(changedMql:MediaQueryList):void {
 		this._queryLists.forEach((mql:MediaQueryList, index:number) => {
-			if (mql.media == changedMql.media) {
+			if (mql.media === changedMql.media) {
 				this._queryListMatches[index] = changedMql.matches;
 			}
 		});
 
 		this.updateFromMatchMedia();
-	};
+	}
 
 	/**
 	 * Takes the results from the matchMedia event listeners saved in the
@@ -115,13 +100,13 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * set the first one in this array.
 	 */
 	private updateFromMatchMedia():void {
-		var numQueries = this._queryListMatches.length;
+		const numQueries = this._queryListMatches.length;
 
-		for (var i = 0; i < numQueries; i++) {
-			var index = reverseDeviceStateOrder ? i : numQueries - 1 - i;
+		for (let i = 0; i < numQueries; i += 1) {
+			const index = reverseDeviceStateOrder ? i : numQueries - 1 - i;
 
 			if (this._queryListMatches[index]) {
-				this.currentState(index);
+				this.currentState = index;
 				break;
 			}
 		}
@@ -130,26 +115,12 @@ export default class DeviceStateTracker extends EventDispatcher {
 	/**
 	 * Initializes tracking of the current media query using a state indicator
 	 * element. This element will hold the state name as content inside its
-	 * :before pseudo-element. On window resize, we will check the contents
-	 * of the pseudo-element to read the current state.
+	 * :before pseudo-element.
 	 */
 	private initStateIndicator():void {
 		this._stateIndicator = document.createElement('div');
 		this._stateIndicator.className = 'state-indicator';
 		document.body.appendChild(this._stateIndicator);
-
-		this.updateFromStateIndicator();
-	}
-
-	/**
-	 * Called on window resize. Reads the current state from the state indicator
-	 * element. Only used if the matchMedia API is unavailable.
-	 */
-	private updateFromStateIndicator():void {
-		var stateContent = window.getComputedStyle(this._stateIndicator, ':before').getPropertyValue('content');
-		var state = parseInt(stateContent.replace(/['"]/g, ''), 10);
-
-		this.currentState(state);
 	}
 
 	/**
