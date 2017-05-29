@@ -1,8 +1,9 @@
 import EventDispatcher from 'seng-event/lib/EventDispatcher';
 import { IDeviceState, IMediaQuery } from './IDeviceStateTracker';
+import DeviceStateEvent from './DeviceStateEvent';
 
 /**
- * Util class that tracks which media query is currently active using the
+ * Utility class that tracks which media query is currently active using the
  * matchMedia API.
  */
 export default class DeviceStateTracker extends EventDispatcher {
@@ -33,7 +34,6 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 */
 	private _stateIndicator:HTMLDivElement;
 
-
 	/**
 	 * This object holds a list of available mediaQueries.
 	 */
@@ -62,8 +62,14 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * @param mediaQueries An object with mediaQueries
 	 * @param reverseDeviceStateOrder When targeting desktop first (max-width) media queries set the
 	 * reverseDeviceStateOrder boolean to true (default false)
+	 * @param showStateIndicator appends a div with the current state name
 	 */
-	constructor(deviceState:IDeviceState, mediaQueries:IMediaQuery, reverseDeviceStateOrder:boolean = false) {
+	constructor(
+		deviceState:IDeviceState,
+		mediaQueries:IMediaQuery,
+		reverseDeviceStateOrder:boolean = false,
+		showStateIndicator:boolean = false,
+	) {
 		super();
 
 		this._deviceState = deviceState;
@@ -71,6 +77,10 @@ export default class DeviceStateTracker extends EventDispatcher {
 		this._reverseDeviceStateOrder = reverseDeviceStateOrder;
 		this.handleQueryChange = this.handleQueryChange.bind(this);
 		this.initTracking();
+
+		if (showStateIndicator) {
+			this.initStateIndicator();
+		}
 	}
 
 	/**
@@ -82,7 +92,6 @@ export default class DeviceStateTracker extends EventDispatcher {
 		});
 
 		this.initMatchMedia();
-		this.initStateIndicator();
 	}
 
 	/**
@@ -136,8 +145,16 @@ export default class DeviceStateTracker extends EventDispatcher {
 			const index = this._reverseDeviceStateOrder ? i : numQueries - 1 - i;
 
 			if (this._queryListMatches[index]) {
+				// Update current state
 				this.currentState = index;
+				// Update current state name
 				this.currentStateName = this._deviceStateNames[index];
+				// Update stateIndicator if available
+				if (this._stateIndicator) {
+					this._stateIndicator.textContent = this.currentStateName;
+				}
+				// Dispatch a new DeviceStateEvent
+				this.dispatchEvent(new DeviceStateEvent(DeviceStateEvent.STATE_UPDATE, false));
 				break;
 			}
 		}
@@ -150,7 +167,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 */
 	private initStateIndicator():void {
 		this._stateIndicator = document.createElement('div');
-		this._stateIndicator.className = 'state-indicator';
+		this._stateIndicator.className = 'seng-state-indicator';
 		document.body.appendChild(this._stateIndicator);
 	}
 
