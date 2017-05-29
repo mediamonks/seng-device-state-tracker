@@ -5,4 +5,3 @@ export interface IDeviceState {
 export interface IMediaQuery {
 	[index:string]:string;
 }
-
