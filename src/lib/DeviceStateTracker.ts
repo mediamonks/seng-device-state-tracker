@@ -1,5 +1,5 @@
-import { DeviceState, mediaQueries, reverseDeviceStateOrder } from 'app/data/scss-shared/MediaQueries';
 import EventDispatcher from 'seng-event/lib/EventDispatcher';
+import { IDeviceState, IMediaQuery } from './IDeviceStateTracker';
 
 /**
  * Util class that tracks which media query is currently active using the
@@ -36,9 +36,42 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 */
 	private _stateIndicator:HTMLDivElement;
 
-	constructor() {
+
+	/**
+	 * This object holds a list of available mediaQueries.
+	 */
+	private _mediaQueries:IMediaQuery;
+
+	/**
+	 * This enum is used by the to determine which of the media queries in
+	 * the _mediaQueries object above are considered 'device states'. Names of this enum have to
+	 * correspond with one of the keys in the _mediaQueries object. When using the DeviceStateTracker,
+	 * make sure you have enough device states so that there will always be one with a matching media query.
+	 *
+	 * At any time only one "device state" will be active. This will be the last name below that has a
+	 * matching breakpoint. This is usually convenient for mobile-first designs. If you want to reverse
+	 * this order (for desktop-first designs, for example). Pass the reverseDeviceStateOrder boolean as true.
+	 */
+	private _deviceState:IDeviceState;
+
+	/**
+	 * Local private variable to store the device state order.
+	 */
+	private _reverseDeviceStateOrder:boolean;
+
+	/**
+	 *
+	 * @param deviceState An enum list with available device states
+	 * @param mediaQueries An object with mediaQueries
+	 * @param reverseDeviceStateOrder When targeting desktop first (max-width) media queries set the
+	 * reverseDeviceStateOrder boolean to true (default false)
+	 */
+	constructor(deviceState:IDeviceState, mediaQueries:IMediaQuery, reverseDeviceStateOrder:boolean = false) {
 		super();
 
+		this._deviceState = deviceState;
+		this._mediaQueries = mediaQueries;
+		this._reverseDeviceStateOrder = reverseDeviceStateOrder;
 		this.handleQueryChange = this.handleQueryChange.bind(this);
 		this.initTracking();
 	}
@@ -47,7 +80,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * Initializes tracking of media queries using matchMedia.
 	 */
 	private initTracking():void {
-		this._deviceStateNames = Object.keys(DeviceState).filter((key) => {
+		this._deviceStateNames = Object.keys(this._deviceState).filter((key) => {
 			return isNaN(parseInt(key, 10));
 		});
 
@@ -61,7 +94,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 */
 	private initMatchMedia():void {
 		this._queryLists = this._deviceStateNames.map<MediaQueryList>((stateName) => {
-			const mediaQuery:string = mediaQueries[stateName];
+			const mediaQuery:string = this._mediaQueries[stateName];
 			if (!mediaQuery) {
 				throw new Error(`DeviceState ${stateName} not found in the mediaQueries array.`);
 			}
@@ -103,10 +136,11 @@ export default class DeviceStateTracker extends EventDispatcher {
 		const numQueries = this._queryListMatches.length;
 
 		for (let i = 0; i < numQueries; i += 1) {
-			const index = reverseDeviceStateOrder ? i : numQueries - 1 - i;
+			const index = this._reverseDeviceStateOrder ? i : numQueries - 1 - i;
 
 			if (this._queryListMatches[index]) {
 				this.currentState = index;
+				this.currentStateName = this._deviceStateNames[index];
 				break;
 			}
 		}
