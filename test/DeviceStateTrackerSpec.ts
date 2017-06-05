@@ -71,8 +71,7 @@ describe('DeviceStateTracker', () => {
 		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState, false, true);
 		// Lint will throw an error if not defined (workaround)
 		if (deviceStateTracker) {
-			const stateIndicator = document.querySelector('.seng-state-indicator').tagName;
-			expect(stateIndicator).to.equal('DIV');
+			expect(document.querySelector('.seng-state-indicator')!.tagName).to.equal('DIV');
 		}
 	});
 
