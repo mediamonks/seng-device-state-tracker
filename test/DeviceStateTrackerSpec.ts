@@ -1,7 +1,7 @@
 import DeviceStateTracker from '../src/lib/DeviceStateTracker';
 import DeviceStateEvent from '../src/lib/DeviceStateEvent';
 import { mediaQueries, DeviceState, WrongDeviceState } from './configMock';
-import { expect, should } from 'chai';
+import { expect } from 'chai';
 import {} from 'mocha';
 const matchMediaMock = require('match-media-mock').create();
 
@@ -104,7 +104,7 @@ describe('DeviceStateTracker', () => {
 	});
 
 	it('should reverse the deviceState order', () => {
-		// Coverage
+		// Branch coverage
 		new DeviceStateTracker(mediaQueries, DeviceState, true);
 	});
 
