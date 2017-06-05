@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import {} from 'mocha';
 const matchMediaMock = require('match-media-mock').create();
 
-
+// Use matchMediaMock instead of window.matchMedia native
 window.matchMedia = <any> matchMediaMock;
 
 describe('DeviceStateTracker', () => {
