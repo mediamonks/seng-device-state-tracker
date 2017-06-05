@@ -2,6 +2,7 @@
   "extends": "../tsconfig",
   "compilerOptions": {
     "inlineSourceMap": true,
+    "allowJs": true,
     "typeRoots": [
       "../node_modules/@types"
     ]

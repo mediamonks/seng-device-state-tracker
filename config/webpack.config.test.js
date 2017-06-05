@@ -34,7 +34,12 @@ module.exports = function()
 					query: {
 						configFileName: './config/tsconfig.test.json'
 					}
-				}
+				},
+				{
+					test: /\.js$/,
+					exclude: /node_modules/,
+					loader: 'babel-loader?presets[]=es2015',
+				},
 			],
 			postLoaders: [
 				/**
