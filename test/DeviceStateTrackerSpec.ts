@@ -1,5 +1,7 @@
 import DeviceStateTracker from '../src/lib/DeviceStateTracker';
 import DeviceStateEvent from '../src/lib/DeviceStateEvent';
+// Uncomment to test with JS configMock
+// import { mediaQueries, DeviceState, WrongDeviceState } from './configMockJs';
 import { mediaQueries, DeviceState, WrongDeviceState } from './configMock';
 import { expect } from 'chai';
 import {} from 'mocha';
@@ -8,14 +10,36 @@ const matchMediaMock = require('match-media-mock').create();
 // Use matchMediaMock instead of window.matchMedia native
 window.matchMedia = <any> matchMediaMock;
 
+/**
+ * Small helper function for populating media key of QueryList object
+ * Handles JavaScript and TypeScript 'enums'
+ * @param deviceState
+ * @param deviceStateTracker
+ */
+const populateQueryListMediaKey = (deviceStateTracker) => {
+	const enumValues = Object.keys(DeviceState)
+		.reduce(
+			(accumulator:Array<string>, value) => {
+				if (isNaN(parseInt(value, 10))) {
+					accumulator.push(value);
+				}
+
+				return accumulator;
+			},
+			[]);
+
+	(<any> deviceStateTracker)._queryLists.forEach((mq, index) => mq.media = mediaQueries[enumValues[index]]);
+};
+
 describe('DeviceStateTracker', () => {
 	describe('#DeviceStateTracker should return the correct state for different Device States', () => {
 		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState);
+
 		// https://github.com/azazdeaz/match-media-mock/issues/2
-		(<any> deviceStateTracker)._queryLists.forEach((mq, index) => mq.media = mediaQueries[DeviceState[index]]);
+		populateQueryListMediaKey(deviceStateTracker);
 
 		it('should match X_SMALL', () => {
-			matchMediaMock.setConfig({ type: 'screen', width: 479 });
+			matchMediaMock.setConfig({ type: 'screen', width: 478 });
 
 			const eventHandler = () => {
 				expect(deviceStateTracker.currentState).to.equal(DeviceState.X_SMALL);
