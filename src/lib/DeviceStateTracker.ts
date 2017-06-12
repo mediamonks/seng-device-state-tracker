@@ -25,8 +25,9 @@ export default class DeviceStateTracker extends EventDispatcher {
 	private deviceStateNames:Array<string> = [];
 	/**
 	 * Array containing a boolean for each device state that indicates if the
-	 * media query currently matches. When multiple media queries match, we will
-	 * set the state to the one with the largest index.
+	 * media query currently matches. When multiple media queries match, it will
+	 * set the state to the one with the largest index. In reverse device state order
+	 * it will set the state to the one with the smallest index.
 	 */
 	private queryListMatches:Array<boolean> = [];
 	/**
