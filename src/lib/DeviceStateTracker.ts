@@ -99,7 +99,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 			throw new Error(`[DeviceStateTracker] DeviceState object should contain valid enum values`);
 		}
 
-		// Check if enum keys are in a ascending order
+		// Check if enum keys are in an ascending order
 		enumKeys.forEach((key:number, index) => {
 			// Check order
 			if (key !== index) {
