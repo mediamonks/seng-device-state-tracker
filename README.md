@@ -136,7 +136,7 @@ export const DeviceState = {
 import { DeviceStateTracker, DeviceStateEvent } from 'seng-device-state-tracker';
 import { mediaQueries, DeviceState } from './path/to/config/deviceStateConfig';
 
-const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState);
+const deviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState);
 
 deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, () => {
 	console.log(DeviceState[deviceStateTracker.currentState]);
