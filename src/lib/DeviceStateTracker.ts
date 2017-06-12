@@ -88,8 +88,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * an ascending order.
 	 * @param deviceState
 	 */
-	private enumCheck(deviceState:any):void {
-		let index = 0;
+	private enumCheck(deviceState:IDeviceState):void {
 		// Get all the keys of deviceState object
 		const enumValues = Object.keys(deviceState).map(k => deviceState[k]);
 		// Get all the numeric values from enumValues
@@ -101,12 +100,11 @@ export default class DeviceStateTracker extends EventDispatcher {
 		}
 
 		// Check if enum keys are in a ascending order
-		enumKeys.forEach((key:number) => {
+		enumKeys.forEach((key:number, index) => {
 			// Check order
 			if (key !== index) {
 				throw new Error(`[DeviceStateTracker] DeviceState ${deviceState[key]}: ${key} is not following an ascending order`);
 			}
-			index += 1;
 		});
 	}
 
