@@ -1,8 +1,8 @@
 import DeviceStateTracker from '../src/lib/DeviceStateTracker';
 import DeviceStateEvent from '../src/lib/DeviceStateEvent';
 // Uncomment to test with JS configMock
-// import { mediaQueries, DeviceState, WrongDeviceState } from './configMockJs';
-import { mediaQueries, DeviceState, WrongDeviceState } from './configMock';
+// import { mediaQueries, DeviceState, WrongDeviceState, maxWidthMediaQueries } from './configMockJs';
+import { mediaQueries, DeviceState, WrongDeviceState, maxWidthMediaQueries } from './configMock';
 import { expect } from 'chai';
 import {} from 'mocha';
 const matchMediaMock = require('match-media-mock').create();
@@ -144,21 +144,103 @@ describe('DeviceStateTracker', () => {
 		);
 	});
 
-	it('should reverse the deviceState order', () => {
-		// Branch coverage
-		new DeviceStateTracker(
+	describe('#DeviceStateTracker should return the correct state for different Device States (reversed)', () => {
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(
+			{
+				mediaQueries: maxWidthMediaQueries,
+				deviceState: DeviceState,
+			},
+			true);
+
+		// https://github.com/azazdeaz/match-media-mock/issues/2
+		populateQueryListMediaKey(deviceStateTracker);
+
+		it('should match X_SMALL', () => {
+			matchMediaMock.setConfig({ type: 'screen', width: 320 });
+
+			const eventHandler = () => {
+				expect(deviceStateTracker.currentState).to.equal(DeviceState.X_SMALL);
+				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
+			};
+
+			deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
+
+			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
+		});
+
+		it('should match SMALL', () => {
+			matchMediaMock.setConfig({ type: 'screen', width: 480 });
+
+			const eventHandler = () => {
+				expect(deviceStateTracker.currentState).to.equal(DeviceState.SMALL);
+				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
+			};
+
+			deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
+
+			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
+		});
+
+		it('should match MEDIUM', () => {
+			matchMediaMock.setConfig({ type: 'screen', width: 768 });
+
+			const eventHandler = () => {
+				expect(deviceStateTracker.currentState).to.equal(DeviceState.MEDIUM);
+				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
+			};
+
+			deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
+
+			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
+		});
+
+		it('should also LARGE', () => {
+			matchMediaMock.setConfig({ type: 'screen', width: 1024 });
+
+			const eventHandler = () => {
+				expect(deviceStateTracker.currentState).to.equal(DeviceState.LARGE);
+				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
+			};
+
+			deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
+
+			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
+		});
+
+		it('should also match LARGE', () => {
+			matchMediaMock.setConfig({ type: 'screen', width: 1280 });
+
+			const eventHandler = () => {
+				expect(deviceStateTracker.currentState).to.equal(DeviceState.LARGE);
+				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
+			};
+
+			deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
+
+			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
+		});
+	});
+
+
+	it('should remove all mediaQueries,listeners', () => {
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(
+			{
+				mediaQueries,
+				deviceState: DeviceState,
+			});
+
+		deviceStateTracker.destruct();
+		expect((<any> deviceStateTracker).queryList.length).to.equal(0);
+	});
+
+	it('should remove all mediaQueries,listeners and stateIndicator', () => {
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(
 			{
 				mediaQueries,
 				deviceState: DeviceState,
 			},
+			false,
 			true);
-	});
-
-	it('should remove all mediaQueries and listeners', () => {
-		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker({
-			mediaQueries,
-			deviceState: DeviceState,
-		});
 
 		deviceStateTracker.destruct();
 		expect((<any> deviceStateTracker).queryList.length).to.equal(0);
