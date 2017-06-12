@@ -28,7 +28,7 @@ const populateQueryListMediaKey = (deviceStateTracker) => {
 			},
 			[]);
 
-	(<any> deviceStateTracker)._queryLists.forEach((mq, index) => mq.media = mediaQueries[enumValues[index]]);
+	(<any> deviceStateTracker).queryList.forEach((mq, index) => mq.media = mediaQueries[enumValues[index]]);
 };
 
 describe('DeviceStateTracker', () => {

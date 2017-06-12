@@ -18,43 +18,43 @@ export default class DeviceStateTracker extends EventDispatcher {
 	/**
 	 * Array of MediaQueryList instances for each device state.
 	 */
-	private _queryLists:Array<MediaQueryList> = [];
+	private queryList:Array<MediaQueryList> = [];
 	/**
 	 * Array containing the name of each device state.
 	 */
-	private _deviceStateNames:Array<string> = [];
+	private deviceStateNames:Array<string> = [];
 	/**
 	 * Array containing a boolean for each device state that indicates if the
 	 * media query currently matches. When multiple media queries match, we will
 	 * set the state to the one with the largest index.
 	 */
-	private _queryListMatches:Array<boolean> = [];
+	private queryListMatches:Array<boolean> = [];
 	/**
 	 * Reference to a state-indicator element.
 	 */
-	private _stateIndicator:HTMLDivElement;
+	private stateIndicator:HTMLDivElement;
 
 	/**
 	 * This object holds a list of available mediaQueries.
 	 */
-	private _mediaQueries:IMediaQuery;
+	private mediaQueries:IMediaQuery;
 
 	/**
 	 * This enum is used by the to determine which of the media queries in
-	 * the _mediaQueries object above are considered 'device states'. Names of this enum have to
-	 * correspond with one of the keys in the _mediaQueries object. When using the DeviceStateTracker,
+	 * the mediaQueries object above are considered 'device states'. Names of this enum have to
+	 * correspond with one of the keys in the mediaQueries object. When using the DeviceStateTracker,
 	 * make sure you have enough device states so that there will always be one with a matching media query.
 	 *
 	 * At any time only one "device state" will be active. This will be the last name below that has a
 	 * matching breakpoint. This is usually convenient for mobile-first designs. If you want to reverse
 	 * this order (for desktop-first designs, for example). Pass the reverseDeviceStateOrder boolean as true.
 	 */
-	private _deviceState:any;
+	private deviceState:any;
 
 	/**
 	 * Local private variable to store the device state order.
 	 */
-	private _reverseDeviceStateOrder:boolean;
+	private reverseDeviceStateOrder:boolean;
 
 	/**
 	 *
@@ -74,9 +74,9 @@ export default class DeviceStateTracker extends EventDispatcher {
 
 		this.enumCheck(deviceState);
 
-		this._deviceState = deviceState;
-		this._mediaQueries = mediaQueries;
-		this._reverseDeviceStateOrder = reverseDeviceStateOrder;
+		this.deviceState = deviceState;
+		this.mediaQueries = mediaQueries;
+		this.reverseDeviceStateOrder = reverseDeviceStateOrder;
 		this.handleQueryChange = this.handleQueryChange.bind(this);
 		this.initTracking();
 
@@ -116,7 +116,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * Initializes tracking of media queries using matchMedia.
 	 */
 	private initTracking():void {
-		this._deviceStateNames = Object.keys(this._deviceState).filter((key) => {
+		this.deviceStateNames = Object.keys(this.deviceState).filter((key) => {
 			return isNaN(parseInt(key, 10));
 		});
 
@@ -125,19 +125,19 @@ export default class DeviceStateTracker extends EventDispatcher {
 
 	/**
 	 * Loops through each deviceState and adds a matchMedia listener for each.
-	 * Calls updateFromMatchMedia_ to initialize the current state.
+	 * Calls updateFromMatchMedia to initialize the current state.
 	 */
 	private initMatchMedia():void {
-		this._queryLists = this._deviceStateNames.map<MediaQueryList>((stateName) => {
-			const mediaQuery:string = this._mediaQueries[stateName];
+		this.queryList = this.deviceStateNames.map<MediaQueryList>((stateName) => {
+			const mediaQuery:string = this.mediaQueries[stateName];
 			if (!mediaQuery) {
 				throw new Error(`[DeviceStateTracker] DeviceState ${stateName} not found in the mediaQueries array.`);
 			}
 			return window.matchMedia(mediaQuery);
 		});
 
-		this._queryLists.forEach((mql:MediaQueryList) => {
-			this._queryListMatches.push(mql.matches);
+		this.queryList.forEach((mql:MediaQueryList) => {
+			this.queryListMatches.push(mql.matches);
 			mql.addListener(this.handleQueryChange);
 		});
 
@@ -146,15 +146,15 @@ export default class DeviceStateTracker extends EventDispatcher {
 
 	/**
 	 * Called whenever a MediaQueryList updates. Checks if the query matches
-	 * and stores the result in the queryListMatches_ array. Then calls
-	 * updateFromMatchMedia_() to find the current state from all matching
+	 * and stores the result in the queryListMatches array. Then calls
+	 * updateFromMatchMedia() to find the current state from all matching
 	 * queries.
 	 * @param changedMql The MediaQueryList that changed
 	 */
 	private handleQueryChange(changedMql:MediaQueryList):void {
-		this._queryLists.forEach((mql:MediaQueryList, index:number) => {
+		this.queryList.forEach((mql:MediaQueryList, index:number) => {
 			if (mql.media === changedMql.media) {
-				this._queryListMatches[index] = changedMql.matches;
+				this.queryListMatches[index] = changedMql.matches;
 			}
 		});
 
@@ -163,24 +163,24 @@ export default class DeviceStateTracker extends EventDispatcher {
 
 	/**
 	 * Takes the results from the matchMedia event listeners saved in the
-	 * queryListMatches_ property. Sets the last one in the array as the active
+	 * queryListMatches property. Sets the last one in the array as the active
 	 * query. When the reverseDeviceStateOrder boolean is set to true, will
 	 * set the first one in this array.
 	 */
 	private updateFromMatchMedia():void {
-		const numQueries = this._queryListMatches.length;
+		const numQueries = this.queryListMatches.length;
 
 		for (let i = 0; i < numQueries; i += 1) {
-			const index = this._reverseDeviceStateOrder ? i : numQueries - 1 - i;
+			const index = this.reverseDeviceStateOrder ? i : numQueries - 1 - i;
 
-			if (this._queryListMatches[index]) {
+			if (this.queryListMatches[index]) {
 				// Update current state
 				this.currentState = index;
 				// Update current state name
-				this.currentStateName = this._deviceStateNames[index];
+				this.currentStateName = this.deviceStateNames[index];
 				// Update stateIndicator if available
-				if (this._stateIndicator) {
-					this._stateIndicator.textContent = this.currentStateName;
+				if (this.stateIndicator) {
+					this.stateIndicator.textContent = this.currentStateName;
 				}
 				// Dispatch a new DeviceStateEvent
 				this.dispatchEvent(new DeviceStateEvent(DeviceStateEvent.STATE_UPDATE, false));
@@ -195,19 +195,19 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * :before pseudo-element.
 	 */
 	private initStateIndicator():void {
-		this._stateIndicator = document.createElement('div');
-		this._stateIndicator.className = 'seng-state-indicator';
-		document.body.appendChild(this._stateIndicator);
+		this.stateIndicator = document.createElement('div');
+		this.stateIndicator.className = 'seng-state-indicator';
+		document.body.appendChild(this.stateIndicator);
 	}
 
 	/**
 	 * Destruct this DeviceStateTracker instance and remove any event listeners.
 	 */
 	public destruct():void {
-		this._queryLists.forEach((query:MediaQueryList) => {
+		this.queryList.forEach((query:MediaQueryList) => {
 			query.removeListener(this.handleQueryChange);
 		});
 
-		this._queryLists.length = 0;
+		this.queryList.length = 0;
 	}
 }
