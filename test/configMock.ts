@@ -1,4 +1,4 @@
-import IMediaQuery from '../src/lib/IMediaQuery';
+import { IMediaQuery } from '../src/lib/IDeviceStateConfig';
 /**
  * Object with available media queries
  */

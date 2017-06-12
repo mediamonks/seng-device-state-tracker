@@ -33,7 +33,11 @@ const populateQueryListMediaKey = (deviceStateTracker) => {
 
 describe('DeviceStateTracker', () => {
 	describe('#DeviceStateTracker should return the correct state for different Device States', () => {
-		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState);
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(
+			{
+				mediaQueries,
+				deviceState: DeviceState,
+			});
 
 		// https://github.com/azazdeaz/match-media-mock/issues/2
 		populateQueryListMediaKey(deviceStateTracker);
@@ -48,7 +52,7 @@ describe('DeviceStateTracker', () => {
 
 			deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 
-			(<any> deviceStateTracker)._queryLists.forEach(mq => mq.callListeners());
+			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
 		});
 
 		it('should match SMALL', () => {
@@ -61,7 +65,7 @@ describe('DeviceStateTracker', () => {
 
 			deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 
-			(<any> deviceStateTracker)._queryLists.forEach(mq => mq.callListeners());
+			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
 		});
 
 		it('should match MEDIUM', () => {
@@ -74,7 +78,7 @@ describe('DeviceStateTracker', () => {
 
 			deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 
-			(<any> deviceStateTracker)._queryLists.forEach(mq => mq.callListeners());
+			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
 		});
 
 		it('should match LARGE', () => {
@@ -87,12 +91,17 @@ describe('DeviceStateTracker', () => {
 
 			deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 
-			(<any> deviceStateTracker)._queryLists.forEach(mq => mq.callListeners());
+			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
 		});
 	});
 
 	it('should return the state-indicator div', () => {
-		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState, false, true);
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(
+			{
+				mediaQueries,
+				deviceState: DeviceState,
+			},
+			false, true);
 		// Lint will throw an error if not defined (workaround)
 		if (deviceStateTracker) {
 			expect(document.querySelector('.seng-state-indicator')!.tagName).to.equal('DIV');
@@ -101,7 +110,10 @@ describe('DeviceStateTracker', () => {
 
 	it('should throw an error while calling construct with wrong enum', () => {
 		expect(() => {
-			new DeviceStateTracker(mediaQueries, WrongDeviceState);
+			new DeviceStateTracker({
+				mediaQueries,
+				deviceState: WrongDeviceState,
+			});
 		}).to.throw(
 			Error,
 		);
@@ -109,7 +121,10 @@ describe('DeviceStateTracker', () => {
 
 	it('should throw an error when device state doesn\'t have any keys', () => {
 		expect(() => {
-			new DeviceStateTracker(mediaQueries, {});
+			new DeviceStateTracker({
+				mediaQueries,
+				deviceState: {},
+			});
 		}).to.throw(
 			Error,
 		);
@@ -120,7 +135,10 @@ describe('DeviceStateTracker', () => {
 		delete mediaQueriesClone['MEDIUM'];
 
 		expect(() => {
-			new DeviceStateTracker(mediaQueriesClone, DeviceState);
+			new DeviceStateTracker({
+				mediaQueries: mediaQueriesClone,
+				deviceState: DeviceState,
+			});
 		}).to.throw(
 			Error,
 		);
@@ -128,13 +146,21 @@ describe('DeviceStateTracker', () => {
 
 	it('should reverse the deviceState order', () => {
 		// Branch coverage
-		new DeviceStateTracker(mediaQueries, DeviceState, true);
+		new DeviceStateTracker(
+			{
+				mediaQueries,
+				deviceState: DeviceState,
+			},
+			true);
 	});
 
 	it('should remove all mediaQueries and listeners', () => {
-		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState);
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker({
+			mediaQueries,
+			deviceState: DeviceState,
+		});
 
 		deviceStateTracker.destruct();
-		expect((<any> deviceStateTracker)._queryLists.length).to.equal(0);
+		expect((<any> deviceStateTracker).queryList.length).to.equal(0);
 	});
 });

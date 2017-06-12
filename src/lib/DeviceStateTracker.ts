@@ -1,6 +1,6 @@
 import EventDispatcher from 'seng-event/lib/EventDispatcher';
 import DeviceStateEvent from './DeviceStateEvent';
-import IMediaQuery from './IMediaQuery';
+import IDeviceStateConfig, { IMediaQuery, IDeviceState } from './IDeviceStateConfig';
 
 /**
  * Utility class that tracks which media query is currently active using the
@@ -49,7 +49,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * matching breakpoint. This is usually convenient for mobile-first designs. If you want to reverse
 	 * this order (for desktop-first designs, for example). Pass the reverseDeviceStateOrder boolean as true.
 	 */
-	private deviceState:any;
+	private deviceState:IDeviceState;
 
 	/**
 	 * Local private variable to store the device state order.
@@ -65,17 +65,16 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * @param showStateIndicator appends a div with the current state name
 	 */
 	constructor(
-		mediaQueries:IMediaQuery,
-		deviceState:any,
+		deviceStateConfig:IDeviceStateConfig,
 		reverseDeviceStateOrder:boolean = false,
 		showStateIndicator:boolean = false,
 	) {
 		super();
 
-		this.enumCheck(deviceState);
+		this.enumCheck(deviceStateConfig.deviceState);
 
-		this.deviceState = deviceState;
-		this.mediaQueries = mediaQueries;
+		this.deviceState = deviceStateConfig.deviceState;
+		this.mediaQueries = deviceStateConfig.mediaQueries;
 		this.reverseDeviceStateOrder = reverseDeviceStateOrder;
 		this.handleQueryChange = this.handleQueryChange.bind(this);
 		this.initTracking();
