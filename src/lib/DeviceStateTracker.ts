@@ -201,6 +201,10 @@ export default class DeviceStateTracker extends EventDispatcher {
 			query.removeListener(this.handleQueryChange);
 		});
 
+		if (this.stateIndicator) {
+			document.body.removeChild(this.stateIndicator);
+		}
+
 		this.queryList.length = 0;
 	}
 }
