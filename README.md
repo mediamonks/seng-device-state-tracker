@@ -60,6 +60,13 @@ download as well:
 Check the **build** section below to see your you can build for all the
 targets yourself.
 
+## Usage information
+When using max-width media queries make sure to set the DeviceStateTracker in reverse order, set the 
+reverseDeviceStateOrder boolean truthy when initializing the DeviceStateTracker class.
+ 
+To keep track of the currently selected media query set the stateIndicator boolean truthy. This will add a unstyled
+div element to the DOM.  
+
 ## Usage TypeScript
 
 **Configuration**
@@ -94,7 +101,10 @@ export enum DeviceState {
 import { DeviceStateTracker, DeviceStateEvent } from 'seng-device-state-tracker';
 import { mediaQueries, DeviceState } from './path/to/config/deviceStateConfig';
 
-const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState);
+const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker({
+	mediaQueries,
+	deviceState: DeviceState
+});
 
 deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, () => {
 	console.log(DeviceState[deviceStateTracker.currentState]);
@@ -136,7 +146,10 @@ export const DeviceState = {
 import { DeviceStateTracker, DeviceStateEvent } from 'seng-device-state-tracker';
 import { mediaQueries, DeviceState } from './path/to/config/deviceStateConfig';
 
-const deviceStateTracker = new DeviceStateTracker(mediaQueries, DeviceState);
+const deviceStateTracker = new DeviceStateTracker({
+	mediaQueries,
+	deviceState: DeviceState
+});
 
 deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, () => {
 	console.log(DeviceState[deviceStateTracker.currentState]);
