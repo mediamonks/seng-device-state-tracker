@@ -58,8 +58,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 
 	/**
 	 *
-	 * @param deviceState An enum list with available device states
-	 * @param mediaQueries An object with mediaQueries
+	 * @param deviceStateConfig An object with media queries and device states
 	 * @param reverseDeviceStateOrder When targeting desktop first (max-width) media queries set the
 	 * reverseDeviceStateOrder boolean to true (default false)
 	 * @param showStateIndicator appends a div with the current state name
@@ -86,7 +85,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 
 	/**
 	 * Checks if the enum object is correctly formatted. The DeviceState enum should only contain numeric values in
-	 * a ascending order.
+	 * an ascending order.
 	 * @param deviceState
 	 */
 	private enumCheck(deviceState:any):void {
