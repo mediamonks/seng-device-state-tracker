@@ -112,10 +112,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * Initializes tracking of media queries using matchMedia.
 	 */
 	private initTracking():void {
-		this.deviceStateNames = Object.keys(this.deviceState).filter((key) => {
-			return isNaN(parseInt(key, 10));
-		});
-
+		this.deviceStateNames = Object.keys(this.deviceState).filter(key => isNaN(parseInt(key, 10)));
 		this.initMatchMedia();
 	}
 
