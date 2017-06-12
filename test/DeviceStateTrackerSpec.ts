@@ -11,7 +11,8 @@ const matchMediaMock = require('match-media-mock').create();
 window.matchMedia = <any> matchMediaMock;
 
 /**
- * Small helper function for populating media key of QueryList object
+ * Small helper function for populating media key of QueryList object see
+ * https://github.com/azazdeaz/match-media-mock/issues/2 for more details.
  * Handles JavaScript and TypeScript 'enums'
  * @param deviceState
  * @param deviceStateTracker
@@ -39,7 +40,6 @@ describe('DeviceStateTracker', () => {
 				deviceState: DeviceState,
 			});
 
-		// https://github.com/azazdeaz/match-media-mock/issues/2
 		populateQueryListMediaKey(deviceStateTracker);
 
 		it('should match X_SMALL', () => {
@@ -152,7 +152,6 @@ describe('DeviceStateTracker', () => {
 			},
 			true);
 
-		// https://github.com/azazdeaz/match-media-mock/issues/2
 		populateQueryListMediaKey(deviceStateTracker);
 
 		it('should match X_SMALL', () => {
