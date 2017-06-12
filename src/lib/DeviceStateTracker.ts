@@ -185,8 +185,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 
 	/**
 	 * Initializes tracking of the current media query using a state indicator
-	 * element. This element will hold the state name as content inside its
-	 * :before pseudo-element.
+	 * element. This element will hold the state name as content inside.
 	 */
 	private initStateIndicator():void {
 		this.stateIndicator = document.createElement('div');
