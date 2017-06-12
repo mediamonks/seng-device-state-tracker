@@ -92,7 +92,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 		// Get all the keys of deviceState object
 		const enumValues = Object.keys(deviceState).map(k => deviceState[k]);
 		// Get all the numeric values from enumValues
-		const enumKeys = enumValues.filter(value => typeof value === 'number') as number[];
+		const enumKeys = enumValues.filter(value => typeof value === 'number') as Array<number>;
 
 		// Check if we actually have enum values
 		if (enumKeys.length === 0) {
