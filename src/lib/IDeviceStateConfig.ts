@@ -1,6 +1,8 @@
 interface IDeviceStateConfig {
 	mediaQueries:IMediaQuery;
 	deviceState:IDeviceState;
+	reverseDeviceStateOrder?:boolean;
+	showStateIndicator?:boolean;
 }
 
 export interface IMediaQuery {

@@ -66,20 +66,18 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 */
 	constructor(
 		deviceStateConfig:IDeviceStateConfig,
-		reverseDeviceStateOrder:boolean = false,
-		showStateIndicator:boolean = false,
 	) {
 		super();
 
 		this.enumCheck(deviceStateConfig.deviceState);
 
+		this.reverseDeviceStateOrder = deviceStateConfig.reverseDeviceStateOrder || false;
 		this.deviceState = deviceStateConfig.deviceState;
 		this.mediaQueries = deviceStateConfig.mediaQueries;
-		this.reverseDeviceStateOrder = reverseDeviceStateOrder;
 		this.handleQueryChange = this.handleQueryChange.bind(this);
 		this.initTracking();
 
-		if (showStateIndicator) {
+		if (deviceStateConfig.showStateIndicator) {
 			this.initStateIndicator();
 		}
 	}

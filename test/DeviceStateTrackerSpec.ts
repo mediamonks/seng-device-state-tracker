@@ -5,6 +5,7 @@ import DeviceStateEvent from '../src/lib/DeviceStateEvent';
 import { mediaQueries, DeviceState, WrongDeviceState, maxWidthMediaQueries } from './configMock';
 import { expect } from 'chai';
 import {} from 'mocha';
+import IDeviceStateConfig from '../src/lib/IDeviceStateConfig';
 const matchMediaMock = require('match-media-mock').create();
 
 // Use matchMediaMock instead of window.matchMedia native
@@ -34,11 +35,12 @@ const populateQueryListMediaKey = (deviceStateTracker) => {
 
 describe('DeviceStateTracker', () => {
 	describe('#DeviceStateTracker should return the correct state for different Device States', () => {
-		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(
-			{
-				mediaQueries,
-				deviceState: DeviceState,
-			});
+		const config:IDeviceStateConfig = {
+			mediaQueries,
+			deviceState: DeviceState,
+		};
+
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(config);
 
 		populateQueryListMediaKey(deviceStateTracker);
 
@@ -96,12 +98,13 @@ describe('DeviceStateTracker', () => {
 	});
 
 	it('should return the state-indicator div', () => {
-		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(
-			{
-				mediaQueries,
-				deviceState: DeviceState,
-			},
-			false, true);
+		const config:IDeviceStateConfig = {
+			mediaQueries,
+			deviceState: DeviceState,
+			showStateIndicator: true,
+		};
+
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(config);
 		// Lint will throw an error if not defined (workaround)
 		if (deviceStateTracker) {
 			expect(document.querySelector('.seng-state-indicator')!.tagName).to.equal('DIV');
@@ -145,12 +148,13 @@ describe('DeviceStateTracker', () => {
 	});
 
 	describe('#DeviceStateTracker should return the correct state for different Device States (reversed)', () => {
-		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(
-			{
-				mediaQueries: maxWidthMediaQueries,
-				deviceState: DeviceState,
-			},
-			true);
+		const config:IDeviceStateConfig = {
+			mediaQueries: maxWidthMediaQueries,
+			deviceState: DeviceState,
+			reverseDeviceStateOrder: true,
+		};
+
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(config);
 
 		populateQueryListMediaKey(deviceStateTracker);
 
@@ -222,24 +226,25 @@ describe('DeviceStateTracker', () => {
 
 
 	it('should remove all mediaQueries,listeners', () => {
-		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(
-			{
-				mediaQueries,
-				deviceState: DeviceState,
-			});
+		const config:IDeviceStateConfig = {
+			mediaQueries,
+			deviceState: DeviceState,
+		};
+
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(config);
 
 		deviceStateTracker.destruct();
 		expect((<any> deviceStateTracker).queryList.length).to.equal(0);
 	});
 
 	it('should remove all mediaQueries,listeners and stateIndicator', () => {
-		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(
-			{
-				mediaQueries,
-				deviceState: DeviceState,
-			},
-			false,
-			true);
+		const config:IDeviceStateConfig = {
+			mediaQueries,
+			deviceState: DeviceState,
+			showStateIndicator: true,
+		};
+
+		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(config);
 
 		deviceStateTracker.destruct();
 		expect((<any> deviceStateTracker).queryList.length).to.equal(0);
