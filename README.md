@@ -67,6 +67,27 @@ reverseDeviceStateOrder boolean truthy when initializing the DeviceStateTracker 
 To keep track of the currently selected media query set the stateIndicator boolean truthy. This will add a unstyled
 div element to the DOM.  
 
+## Example configuration for deviceStateTracker
+```js
+const config:IDeviceStateConfig = {
+	mediaQueries: {
+		X_SMALL: '(max-width: 479px)',
+    	SMALL: '(min-width: 480px)',
+    	MEDIUM: '(min-width: 768px)',
+    	LARGE: '(min-width: 1024px)',
+    }
+	deviceState: {
+		X_SMALL: 0,
+    	SMALL: 1,
+    	MEDIUM: 2,
+    	LARGE: 3,
+	},
+	// When the keys below aren't set it will default to false for these options 
+	showStateIndicator: true,
+	reverseDeviceStateOrder: true,
+};
+```
+
 ## Usage TypeScript
 
 **Configuration**
@@ -103,13 +124,13 @@ import { mediaQueries, DeviceState } from './path/to/config/deviceStateConfig';
 
 const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker({
 	mediaQueries,
-	deviceState: DeviceState
+	deviceState: DeviceState,
 });
 
-deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, () => {
+deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event:DeviceStateEvent) => {
 	console.log(DeviceState[deviceStateTracker.currentState]);
 	
-	if (deviceStateTracker.currentState === DeviceState.SMALL) {
+	if (event.data.state === DeviceState.SMALL) {
 		console.log('Matched', deviceStateTracker.currentStateName);
 	}
 });
@@ -151,10 +172,10 @@ const deviceStateTracker = new DeviceStateTracker({
 	deviceState: DeviceState
 });
 
-deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, () => {
+deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event) => {
 	console.log(DeviceState[deviceStateTracker.currentState]);
 	
-	if (deviceStateTracker.currentState === DeviceState.SMALL) {
+	if (event.data.state === DeviceState.SMALL) {
 		console.log('Matched', deviceStateTracker.currentStateName);
 	}
 });
