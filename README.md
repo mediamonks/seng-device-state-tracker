@@ -75,7 +75,7 @@ const config:IDeviceStateConfig = {
 		SMALL: '(min-width: 480px)',
 		MEDIUM: '(min-width: 768px)',
 		LARGE: '(min-width: 1024px)',
-    }
+	},
 	deviceState: {
 		X_SMALL: 0,
 		SMALL: 1,
