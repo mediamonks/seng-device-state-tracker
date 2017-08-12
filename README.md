@@ -72,15 +72,15 @@ div element to the DOM.
 const config:IDeviceStateConfig = {
 	mediaQueries: {
 		X_SMALL: '(max-width: 479px)',
-    	SMALL: '(min-width: 480px)',
-    	MEDIUM: '(min-width: 768px)',
-    	LARGE: '(min-width: 1024px)',
+		SMALL: '(min-width: 480px)',
+		MEDIUM: '(min-width: 768px)',
+		LARGE: '(min-width: 1024px)',
     }
 	deviceState: {
 		X_SMALL: 0,
-    	SMALL: 1,
-    	MEDIUM: 2,
-    	LARGE: 3,
+		SMALL: 1,
+		MEDIUM: 2,
+		LARGE: 3,
 	},
 	// When the keys below aren't set it will default to false for these options 
 	showStateIndicator: true,
