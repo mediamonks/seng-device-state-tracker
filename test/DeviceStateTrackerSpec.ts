@@ -45,8 +45,8 @@ describe('DeviceStateTracker', () => {
 		it('should match X_SMALL', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 478 });
 
-			const eventHandler = () => {
-				expect(deviceStateTracker.currentState).to.equal(DeviceState.X_SMALL);
+			const eventHandler = (event:DeviceStateEvent) => {
+				expect(event.data.state).to.equal(DeviceState.X_SMALL);
 				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 			};
 
@@ -58,8 +58,8 @@ describe('DeviceStateTracker', () => {
 		it('should match SMALL', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 480 });
 
-			const eventHandler = () => {
-				expect(deviceStateTracker.currentState).to.equal(DeviceState.SMALL);
+			const eventHandler = (event:DeviceStateEvent) => {
+				expect(event.data.state).to.equal(DeviceState.SMALL);
 				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 			};
 
@@ -71,8 +71,8 @@ describe('DeviceStateTracker', () => {
 		it('should match MEDIUM', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 768 });
 
-			const eventHandler = () => {
-				expect(deviceStateTracker.currentState).to.equal(DeviceState.MEDIUM);
+			const eventHandler = (event:DeviceStateEvent) => {
+				expect(event.data.state).to.equal(DeviceState.MEDIUM);
 				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 			};
 
@@ -84,8 +84,8 @@ describe('DeviceStateTracker', () => {
 		it('should match LARGE', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 1280 });
 
-			const eventHandler = () => {
-				expect(deviceStateTracker.currentState).to.equal(DeviceState.LARGE);
+			const eventHandler = (event:DeviceStateEvent) => {
+				expect(event.data.state).to.equal(DeviceState.LARGE);
 				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 			};
 
@@ -157,8 +157,8 @@ describe('DeviceStateTracker', () => {
 		it('should match X_SMALL', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 320 });
 
-			const eventHandler = () => {
-				expect(deviceStateTracker.currentState).to.equal(DeviceState.X_SMALL);
+			const eventHandler = (event:DeviceStateEvent) => {
+				expect(event.data.state).to.equal(DeviceState.X_SMALL);
 				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 			};
 
@@ -170,8 +170,8 @@ describe('DeviceStateTracker', () => {
 		it('should match SMALL', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 480 });
 
-			const eventHandler = () => {
-				expect(deviceStateTracker.currentState).to.equal(DeviceState.SMALL);
+			const eventHandler = (event:DeviceStateEvent) => {
+				expect(event.data.state).to.equal(DeviceState.SMALL);
 				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 			};
 
@@ -183,8 +183,8 @@ describe('DeviceStateTracker', () => {
 		it('should match MEDIUM', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 768 });
 
-			const eventHandler = () => {
-				expect(deviceStateTracker.currentState).to.equal(DeviceState.MEDIUM);
+			const eventHandler = (event:DeviceStateEvent) => {
+				expect(event.data.state).to.equal(DeviceState.MEDIUM);
 				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 			};
 
@@ -196,8 +196,8 @@ describe('DeviceStateTracker', () => {
 		it('should also LARGE', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 1024 });
 
-			const eventHandler = () => {
-				expect(deviceStateTracker.currentState).to.equal(DeviceState.LARGE);
+			const eventHandler = (event:DeviceStateEvent) => {
+				expect(event.data.state).to.equal(DeviceState.LARGE);
 				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 			};
 
@@ -209,8 +209,8 @@ describe('DeviceStateTracker', () => {
 		it('should also match LARGE', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 1280 });
 
-			const eventHandler = () => {
-				expect(deviceStateTracker.currentState).to.equal(DeviceState.LARGE);
+			const eventHandler = (event:DeviceStateEvent) => {
+				expect(event.data.state).to.equal(DeviceState.LARGE);
 				deviceStateTracker.removeEventListener(DeviceStateEvent.STATE_UPDATE, eventHandler);
 			};
 
