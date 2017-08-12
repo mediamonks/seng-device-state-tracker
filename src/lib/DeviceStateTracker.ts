@@ -10,11 +10,11 @@ export default class DeviceStateTracker extends EventDispatcher {
 	/**
 	 * currentState holds the index of the currently active DeviceState.
 	 */
-	public currentState:number;
+	private currentState:number;
 	/**
 	 * currentStateName holds the name of the currently active state.
 	 */
-	public currentStateName:string;
+	private currentStateName:string;
 	/**
 	 * Array of MediaQueryList instances for each device state.
 	 */
@@ -176,8 +176,13 @@ export default class DeviceStateTracker extends EventDispatcher {
 				if (this.stateIndicator) {
 					this.stateIndicator.textContent = this.currentStateName;
 				}
+
 				// Dispatch a new DeviceStateEvent
-				this.dispatchEvent(new DeviceStateEvent(DeviceStateEvent.STATE_UPDATE, false));
+				this.dispatchEvent(new DeviceStateEvent(DeviceStateEvent.STATE_UPDATE, {
+					state: index,
+					name: this.currentStateName,
+				}));
+
 				break;
 			}
 		}
