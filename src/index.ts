@@ -1,6 +1,6 @@
 import 'ts-helpers';
-import { default as _export } from './lib/Example';
-
-export { default as IExample } from './lib/IExample';
+import { default as _export } from './lib/DeviceStateTracker';
+export { default as DeviceStateEvent } from './lib/DeviceStateEvent';
+export { default as IDeviceStateConfig } from './lib/IDeviceStateConfig';
 
 export default _export;

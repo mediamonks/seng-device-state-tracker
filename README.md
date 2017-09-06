@@ -6,8 +6,7 @@
 
 # seng-device-state-tracker
 
-Add a description here...
-
+DeviceStateTracker is a utility class that tracks which media query is currently active using the matchMedia API.
 
 ## Installation
 
@@ -61,15 +60,122 @@ download as well:
 Check the **build** section below to see your you can build for all the
 targets yourself.
 
-## Usage
+## Usage information
+When using max-width media queries make sure to set the DeviceStateTracker in reverse order, set the 
+reverseDeviceStateOrder boolean truthy when initializing the DeviceStateTracker class.
+ 
+To keep track of the currently selected media query set the stateIndicator boolean truthy. This will add a unstyled
+div element to the DOM.  
 
-```ts
-import SengDeviceStateTracker from 'seng-device-state-tracker';
-// import SengDeviceStateTracker from 'seng-device-state-tracker/lib/classname';
-
-// do something with SengDeviceStateTracker
+## Example configuration for deviceStateTracker
+```js
+const config:IDeviceStateConfig = {
+	mediaQueries: {
+		X_SMALL: '(max-width: 479px)',
+		SMALL: '(min-width: 480px)',
+		MEDIUM: '(min-width: 768px)',
+		LARGE: '(min-width: 1024px)',
+	},
+	deviceState: {
+		X_SMALL: 0,
+		SMALL: 1,
+		MEDIUM: 2,
+		LARGE: 3,
+	},
+	// When the keys below aren't set it will default to false for these options 
+	showStateIndicator: true,
+	reverseDeviceStateOrder: true,
+};
 ```
 
+## Usage TypeScript
+
+**Configuration**
+```ts
+/**
+ * Object with available media queries
+ */
+export const mediaQueries:IMediaQuery = {
+	X_SMALL: '(max-width: 479px)',
+	SMALL: '(min-width: 480px)',
+	MEDIUM: '(min-width: 768px)',
+	LARGE: '(min-width: 1024px)',
+	MEDIUM_ISOLATE: '(min-width: 768px) and (max-width: 1023px)',
+};
+
+/**
+ * This enum is used by the DeviceStateTracker class to determine which of the media queries in
+ * the mediaQueries object above are considered 'device states'. Names of this enum have to
+ * correspond with one of the keys in the mediaQueries object. When using the DeviceStateTracker,
+ * make sure you have enough device states so that there will always be one with a matching media query.
+ */
+export enum DeviceState {
+	X_SMALL,
+	SMALL,
+	MEDIUM,
+	LARGE,
+}
+```
+
+**Usage**
+```ts
+import { DeviceStateTracker, DeviceStateEvent } from 'seng-device-state-tracker';
+import { mediaQueries, DeviceState } from './path/to/config/deviceStateConfig';
+
+const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker({
+	mediaQueries,
+	deviceState: DeviceState,
+});
+
+deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event:DeviceStateEvent) => {	
+	if (event.data.state === DeviceState.SMALL) {
+		console.log('Matched', event.data.name);
+	}
+});
+```
+
+## Usage JavaScript
+
+**Configuration**
+```js
+export const mediaQueries = {
+	X_SMALL: '(max-width: 479px)',
+	SMALL: '(min-width: 480px)',
+	MEDIUM: '(min-width: 768px)',
+	LARGE: '(min-width: 1024px)',
+	MEDIUM_ISOLATE: '(min-width: 768px) and (max-width: 1023px)',
+};
+
+/**
+ * This enum is used by the DeviceStateTracker class to determine which of the media queries in
+ * the mediaQueries object above are considered 'device states'. Names of this enum have to
+ * correspond with one of the keys in the mediaQueries object. When using the DeviceStateTracker,
+ * make sure you have enough device states so that there will always be one with a matching media query.
+ */
+export const DeviceState = {
+	X_SMALL: 0,
+	SMALL: 1,
+	MEDIUM: 2,
+	LARGE: 3,
+};
+```
+
+**Usage**
+```js
+import { DeviceStateTracker, DeviceStateEvent } from 'seng-device-state-tracker';
+import { mediaQueries, DeviceState } from './path/to/config/deviceStateConfig';
+
+const deviceStateTracker = new DeviceStateTracker({
+	mediaQueries,
+	deviceState: DeviceState
+});
+
+deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event) => {
+	if (event.data.state === DeviceState.SMALL) {
+		console.log('Matched', event.data.name);
+	}
+});
+```
 
 ## Documentation
 
