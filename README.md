@@ -127,11 +127,9 @@ const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker({
 	deviceState: DeviceState,
 });
 
-deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event:DeviceStateEvent) => {
-	console.log(DeviceState[deviceStateTracker.currentState]);
-	
+deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event:DeviceStateEvent) => {	
 	if (event.data.state === DeviceState.SMALL) {
-		console.log('Matched', deviceStateTracker.currentStateName);
+		console.log('Matched', event.data.name);
 	}
 });
 ```
@@ -173,10 +171,8 @@ const deviceStateTracker = new DeviceStateTracker({
 });
 
 deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event) => {
-	console.log(DeviceState[deviceStateTracker.currentState]);
-	
 	if (event.data.state === DeviceState.SMALL) {
-		console.log('Matched', deviceStateTracker.currentStateName);
+		console.log('Matched', event.data.name);
 	}
 });
 ```
