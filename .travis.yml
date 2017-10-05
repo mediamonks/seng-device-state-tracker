@@ -13,7 +13,7 @@ cache:
 sudo: false
 
 before_install:
-  - yarn global install codeclimate-test-reporter
+  - yarn global add codeclimate-test-reporter
 
 script:
   - yarn build
