@@ -74,12 +74,13 @@ export default class DeviceStateTracker extends EventDispatcher {
 		this.reverseDeviceStateOrder = deviceStateConfig.reverseDeviceStateOrder || false;
 		this.deviceState = deviceStateConfig.deviceState;
 		this.mediaQueries = deviceStateConfig.mediaQueries;
-		this.handleQueryChange = this.handleQueryChange.bind(this);
-		this.initTracking();
 
 		if (deviceStateConfig.showStateIndicator) {
 			this.initStateIndicator();
 		}
+
+		this.handleQueryChange = this.handleQueryChange.bind(this);
+		this.initTracking();
 	}
 
 	/**
