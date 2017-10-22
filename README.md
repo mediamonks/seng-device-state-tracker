@@ -119,7 +119,7 @@ export enum DeviceState {
 
 **Usage**
 ```ts
-import { DeviceStateTracker, DeviceStateEvent } from 'seng-device-state-tracker';
+import DeviceStateTracker, { DeviceStateEvent } from 'seng-device-state-tracker';
 import { mediaQueries, DeviceState } from './path/to/config/deviceStateConfig';
 
 const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker({
@@ -162,12 +162,12 @@ export const DeviceState = {
 
 **Usage**
 ```js
-import { DeviceStateTracker, DeviceStateEvent } from 'seng-device-state-tracker';
+import DeviceStateTracker, { DeviceStateEvent } from 'seng-device-state-tracker';
 import { mediaQueries, DeviceState } from './path/to/config/deviceStateConfig';
 
 const deviceStateTracker = new DeviceStateTracker({
 	mediaQueries,
-	deviceState: DeviceState
+	deviceState: DeviceState,
 });
 
 deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event) => {
