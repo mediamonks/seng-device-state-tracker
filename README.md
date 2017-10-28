@@ -69,7 +69,7 @@ div element to the DOM.
 
 ## Example configuration for deviceStateTracker
 ```js
-const config:IDeviceStateConfig = {
+const config = {
 	mediaQueries: {
 		X_SMALL: '(max-width: 479px)',
 		SMALL: '(min-width: 480px)',
