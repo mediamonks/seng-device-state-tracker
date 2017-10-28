@@ -1,6 +1,7 @@
 import EventDispatcher from 'seng-event/lib/EventDispatcher';
 import DeviceStateEvent from './DeviceStateEvent';
 import IDeviceStateConfig, { IMediaQuery, IDeviceState } from './IDeviceStateConfig';
+import IDeviceStateData from './IDeviceStateData';
 
 /**
  * Utility class that tracks which media query is currently active using the
@@ -64,9 +65,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * reverseDeviceStateOrder boolean to true (default false)
 	 * @param showStateIndicator appends a div with the current state name
 	 */
-	constructor(
-		deviceStateConfig:IDeviceStateConfig,
-	) {
+	constructor(deviceStateConfig:IDeviceStateConfig) {
 		super();
 
 		this.enumCheck(deviceStateConfig.deviceState);
@@ -81,6 +80,13 @@ export default class DeviceStateTracker extends EventDispatcher {
 
 		this.handleQueryChange = this.handleQueryChange.bind(this);
 		this.initTracking();
+	}
+
+	public get currentDeviceState():IDeviceStateData {
+		return {
+			state: this.currentState,
+			name: this.currentStateName,
+		};
 	}
 
 	/**

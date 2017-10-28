@@ -57,6 +57,17 @@ describe('DeviceStateTracker', () => {
 			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
 		});
 
+		it('should match X_SMALL after initialisation', () => {
+			matchMediaMock.setConfig({ type: 'screen', width: 478 });
+
+			(<any> deviceStateTracker).queryList.forEach(mq => mq.callListeners());
+
+			expect(deviceStateTracker.currentDeviceState).to.deep.equal({
+				state: 0,
+				name: 'X_SMALL',
+			});
+		});
+
 		it('should match SMALL', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 480 });
 

@@ -127,7 +127,10 @@ const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker({
 	deviceState: DeviceState,
 });
 
-deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event:DeviceStateEvent) => {	
+// Retrieve the current state after initialisation
+const { state, name } = deviceStateTracker.currentDeviceState;
+
+deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event:DeviceStateEvent) => {
 	if (event.data.state === DeviceState.SMALL) {
 		console.log('Matched', event.data.name);
 	}
@@ -169,6 +172,9 @@ const deviceStateTracker = new DeviceStateTracker({
 	mediaQueries,
 	deviceState: DeviceState,
 });
+
+// Retrieve the current state after initialisation
+const { state, name } = deviceStateTracker.currentDeviceState;
 
 deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event) => {
 	if (event.data.state === DeviceState.SMALL) {
