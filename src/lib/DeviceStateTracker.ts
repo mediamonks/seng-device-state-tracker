@@ -202,6 +202,28 @@ export default class DeviceStateTracker extends EventDispatcher {
 	private initStateIndicator():void {
 		this.stateIndicator = document.createElement('div');
 		this.stateIndicator.className = 'seng-state-indicator';
+
+		const style = document.createElement('style');
+		style.setAttribute('type', 'text/css');
+		style.innerHTML = `
+			.seng-state-indicator {
+			  position: fixed;
+			  top: 0;
+			  right: 0;
+			  background-color: #17a2b8;
+			  padding: 4px;
+			  text-transform: uppercase;
+			  font: normal small-caps bold 12px/1 monospace;
+			  border-radius: 0 0 0 2px;
+			  color: #fff;
+			  border-left: 1px solid #000;
+			  border-bottom: 1px solid #000;
+			}
+		`;
+
+		// Always inject the CSS as first element in the document
+		// head so it can be easily overridden by other style sheets
+		document.head.insertBefore(style, document.head.children[0]);
 		document.body.appendChild(this.stateIndicator);
 	}
 
