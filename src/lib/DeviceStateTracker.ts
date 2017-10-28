@@ -168,7 +168,8 @@ export default class DeviceStateTracker extends EventDispatcher {
 	 * Takes the results from the matchMedia event listeners saved in the
 	 * queryListMatches property. Sets the last one in the array as the active
 	 * query. When the reverseDeviceStateOrder boolean is set to true, will
-	 * set the first one in this array.
+	 * set the first one in this array. Dispatches a DeviceStateEvent with the
+	 * current DeviceState
 	 */
 	private updateFromMatchMedia():void {
 		const numQueries = this.queryListMatches.length;
@@ -177,16 +178,13 @@ export default class DeviceStateTracker extends EventDispatcher {
 			const index = this.reverseDeviceStateOrder ? i : numQueries - 1 - i;
 
 			if (this.queryListMatches[index]) {
-				// Update current state
 				this.currentState = index;
-				// Update current state name
 				this.currentStateName = this.deviceStateNames[index];
-				// Update stateIndicator if available
+
 				if (this.stateIndicator) {
 					this.stateIndicator.textContent = this.currentStateName;
 				}
 
-				// Dispatch a new DeviceStateEvent
 				this.dispatchEvent(new DeviceStateEvent(DeviceStateEvent.STATE_UPDATE, {
 					state: index,
 					name: this.currentStateName,
