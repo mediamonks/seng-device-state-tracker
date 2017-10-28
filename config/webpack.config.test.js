@@ -26,7 +26,7 @@ module.exports = {
 				use: {
 					loader: 'awesome-typescript-loader',
 					options: {
-						configFileName: path.resolve(__dirname, '../config/tsconfig.webpack.json'),
+						configFileName: path.resolve(__dirname, '../config/tsconfig.test.json'),
 					}
 				},
 			},
@@ -46,12 +46,12 @@ module.exports = {
 			}
 		]
 	},
-	plugins: [
-		new webpack.SourceMapDevToolPlugin({
-			filename: null,
-			test: /\.(ts|js)($|\?)/i
-		}),
-	],
+	// plugins: [
+	// 	new webpack.SourceMapDevToolPlugin({
+	// 		filename: null,
+	// 		test: /\.(ts|js)($|\?)/i
+	// 	}),
+	// ],
 	stats: {
 		colors: true,
 	},
