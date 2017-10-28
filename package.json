@@ -1,7 +1,7 @@
 {
   "name": "seng-device-state-tracker",
   "version": "1.1.1",
-  "description": "Boilerplate and example project for all Seng projects",
+  "description": "DeviceStateTracker is a utility class that tracks which media query is currently active using the matchMedia API.",
   "main": "index.js",
   "scripts": {
     "prepublish": "npm run build:npm",
