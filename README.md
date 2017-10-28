@@ -84,7 +84,7 @@ const config = {
 	},
 	// When the keys below aren't set it will default to false for these options 
 	showStateIndicator: true,
-	reverseDeviceStateOrder: true,
+	reverseDeviceStateOrder: false,
 };
 ```
 
