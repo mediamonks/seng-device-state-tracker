@@ -70,9 +70,11 @@
 					<a href="https://www.npmjs.com/package/seng-device-state-tracker"><img src="https://img.shields.io/npm/v/seng-device-state-tracker.svg?maxAge=2592000" alt="npm"></a>
 				<a href="https://www.npmjs.com/package/seng-device-state-tracker"><img src="https://img.shields.io/npm/dm/seng-device-state-tracker.svg?maxAge=2592000" alt="npm"></a></p>
 				<h1 id="seng-device-state-tracker">seng-device-state-tracker</h1>
-				<p>Add a description here...</p>
+				<p>DeviceStateTracker is a utility class that tracks which media query is currently active using the matchMedia API.</p>
 				<h2 id="installation">Installation</h2>
-				<h3 id="npm">npm</h3>
+				<h3 id="yarn-npm">yarn / npm</h3>
+				<pre><code class="lang-sh">yarn add seng-device-state-tracker
+</code></pre>
 				<pre><code class="lang-sh">npm i -S seng-device-state-tracker
 </code></pre>
 				<h3 id="other">other</h3>
@@ -110,14 +112,117 @@ download as well:
 				<h3 id="manual">manual</h3>
 				<p>Check the <strong>build</strong> section below to see your you can build for all the
 				targets yourself.</p>
-				<h2 id="usage">Usage</h2>
-				<pre><code class="lang-ts"><span class="hljs-keyword">import</span> SengDeviceStateTracker <span class="hljs-keyword">from</span> <span class="hljs-string">'seng-device-state-tracker'</span>;
-<span class="hljs-comment">// import SengDeviceStateTracker from 'seng-device-state-tracker/lib/classname';</span>
+				<h2 id="usage-information">Usage information</h2>
+				<p>When using max-width media queries make sure to set the DeviceStateTracker in reverse order, set the
+				reverseDeviceStateOrder boolean truthy when initializing the DeviceStateTracker class.</p>
+				<p>To keep track of the currently selected media query set the stateIndicator boolean truthy. This will add a unstyled
+				div element to the DOM.  </p>
+				<h2 id="example-configuration-for-devicestatetracker">Example configuration for deviceStateTracker</h2>
+				<pre><code class="lang-js"><span class="hljs-keyword">const</span> config = {
+    <span class="hljs-attr">mediaQueries</span>: {
+        <span class="hljs-attr">X_SMALL</span>: <span class="hljs-string">'(max-width: 479px)'</span>,
+        <span class="hljs-attr">SMALL</span>: <span class="hljs-string">'(min-width: 480px)'</span>,
+        <span class="hljs-attr">MEDIUM</span>: <span class="hljs-string">'(min-width: 768px)'</span>,
+        <span class="hljs-attr">LARGE</span>: <span class="hljs-string">'(min-width: 1024px)'</span>,
+    },
+    <span class="hljs-attr">deviceState</span>: {
+        <span class="hljs-attr">X_SMALL</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-attr">SMALL</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">MEDIUM</span>: <span class="hljs-number">2</span>,
+        <span class="hljs-attr">LARGE</span>: <span class="hljs-number">3</span>,
+    },
+    <span class="hljs-comment">// When the keys below aren't set it will default to false for these options </span>
+    showStateIndicator: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">reverseDeviceStateOrder</span>: <span class="hljs-literal">false</span>,
+};
+</code></pre>
+				<h2 id="usage-typescript">Usage TypeScript</h2>
+				<p><strong>Configuration</strong></p>
+				<pre><code class="lang-ts"><span class="hljs-comment">/**
+ * Object with available media queries
+ */</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mediaQueries:IMediaQuery = {
+    X_SMALL: <span class="hljs-string">'(max-width: 479px)'</span>,
+    SMALL: <span class="hljs-string">'(min-width: 480px)'</span>,
+    MEDIUM: <span class="hljs-string">'(min-width: 768px)'</span>,
+    LARGE: <span class="hljs-string">'(min-width: 1024px)'</span>,
+    MEDIUM_ISOLATE: <span class="hljs-string">'(min-width: 768px) and (max-width: 1023px)'</span>,
+};
 
-<span class="hljs-comment">// do something with SengDeviceStateTracker</span>
+<span class="hljs-comment">/**
+ * This enum is used by the DeviceStateTracker class to determine which of the media queries in
+ * the mediaQueries object above are considered 'device states'. Names of this enum have to
+ * correspond with one of the keys in the mediaQueries object. When using the DeviceStateTracker,
+ * make sure you have enough device states so that there will always be one with a matching media query.
+ */</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">enum</span> DeviceState {
+    X_SMALL,
+    SMALL,
+    MEDIUM,
+    LARGE,
+}
+</code></pre>
+				<p><strong>Usage</strong></p>
+				<pre><code class="lang-ts"><span class="hljs-keyword">import</span> DeviceStateTracker, { DeviceStateEvent } <span class="hljs-keyword">from</span> <span class="hljs-string">'seng-device-state-tracker'</span>;
+<span class="hljs-keyword">import</span> { mediaQueries, DeviceState } <span class="hljs-keyword">from</span> <span class="hljs-string">'./path/to/config/deviceStateConfig'</span>;
+
+<span class="hljs-keyword">const</span> deviceStateTracker:DeviceStateTracker = <span class="hljs-keyword">new</span> DeviceStateTracker({
+    mediaQueries,
+    deviceState: DeviceState,
+});
+
+<span class="hljs-comment">// Retrieve the current state after initialisation</span>
+<span class="hljs-keyword">const</span> { state, name } = deviceStateTracker.currentDeviceState;
+
+deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, <span class="hljs-function">(<span class="hljs-params">event:DeviceStateEvent</span>) =&gt;</span> {
+    <span class="hljs-keyword">if</span> (event.data.state === DeviceState.SMALL) {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Matched'</span>, event.data.name);
+    }
+});
+</code></pre>
+				<h2 id="usage-javascript">Usage JavaScript</h2>
+				<p><strong>Configuration</strong></p>
+				<pre><code class="lang-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mediaQueries = {
+    <span class="hljs-attr">X_SMALL</span>: <span class="hljs-string">'(max-width: 479px)'</span>,
+    <span class="hljs-attr">SMALL</span>: <span class="hljs-string">'(min-width: 480px)'</span>,
+    <span class="hljs-attr">MEDIUM</span>: <span class="hljs-string">'(min-width: 768px)'</span>,
+    <span class="hljs-attr">LARGE</span>: <span class="hljs-string">'(min-width: 1024px)'</span>,
+    <span class="hljs-attr">MEDIUM_ISOLATE</span>: <span class="hljs-string">'(min-width: 768px) and (max-width: 1023px)'</span>,
+};
+
+<span class="hljs-comment">/**
+ * This enum is used by the DeviceStateTracker class to determine which of the media queries in
+ * the mediaQueries object above are considered 'device states'. Names of this enum have to
+ * correspond with one of the keys in the mediaQueries object. When using the DeviceStateTracker,
+ * make sure you have enough device states so that there will always be one with a matching media query.
+ */</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> DeviceState = {
+    <span class="hljs-attr">X_SMALL</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">SMALL</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">MEDIUM</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-attr">LARGE</span>: <span class="hljs-number">3</span>,
+};
+</code></pre>
+				<p><strong>Usage</strong></p>
+				<pre><code class="lang-js"><span class="hljs-keyword">import</span> DeviceStateTracker, { DeviceStateEvent } <span class="hljs-keyword">from</span> <span class="hljs-string">'seng-device-state-tracker'</span>;
+<span class="hljs-keyword">import</span> { mediaQueries, DeviceState } <span class="hljs-keyword">from</span> <span class="hljs-string">'./path/to/config/deviceStateConfig'</span>;
+
+<span class="hljs-keyword">const</span> deviceStateTracker = <span class="hljs-keyword">new</span> DeviceStateTracker({
+    mediaQueries,
+    <span class="hljs-attr">deviceState</span>: DeviceState,
+});
+
+<span class="hljs-comment">// Retrieve the current state after initialisation</span>
+<span class="hljs-keyword">const</span> { state, name } = deviceStateTracker.currentDeviceState;
+
+deviceStateTracker.addEventListener(DeviceStateEvent.STATE_UPDATE, (event) =&gt; {
+    <span class="hljs-keyword">if</span> (event.data.state === DeviceState.SMALL) {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Matched'</span>, event.data.name);
+    }
+});
 </code></pre>
 				<h2 id="documentation">Documentation</h2>
-				<p>View the <a href="https://rawgit.com/mediamonks/seng-device-state-tracker/master/docs/index.html">generated documentation</a>.</p>
+				<p>View the <a href="http://mediamonks.github.io/seng-device-state-tracker/">generated documentation</a>.</p>
 				<h2 id="building">Building</h2>
 				<p>In order to build seng-device-state-tracker, ensure that you have <a href="http://git-scm.com/downloads">Git</a>
 				and <a href="http://nodejs.org/">Node.js</a> installed.</p>
@@ -127,21 +232,18 @@ download as well:
 				<p>Change to the seng-device-state-tracker directory:</p>
 				<pre><code class="lang-sh"><span class="hljs-built_in">cd</span> seng-device-state-tracker
 </code></pre>
-				<p>Install typings cli utility:</p>
-				<pre><code class="lang-sh">npm install typings --global
-</code></pre>
 				<p>Install dev dependencies:</p>
-				<pre><code class="lang-sh">npm install
+				<pre><code class="lang-sh">yarn
 </code></pre>
 				<p>Use one of the following main scripts:</p>
-				<pre><code class="lang-sh">npm run build           <span class="hljs-comment"># build this project</span>
-npm run dev             <span class="hljs-comment"># run dev-watch mode, serving example/index.html in the browser</span>
-npm run generate        <span class="hljs-comment"># generate all artifacts (compiles ts, webpack, docs and coverage)</span>
-npm run typings         <span class="hljs-comment"># install .d.ts dependencies (done on install)</span>
-npm run <span class="hljs-built_in">test</span>:unit       <span class="hljs-comment"># run the unit tests</span>
-npm run validate        <span class="hljs-comment"># runs validation scripts, including test, lint and coverage check</span>
-npm run lint            <span class="hljs-comment"># run tslint on this project</span>
-npm run doc             <span class="hljs-comment"># generate typedoc documentation</span>
+				<pre><code class="lang-sh">yarn build           <span class="hljs-comment"># build this project</span>
+yarn dev             <span class="hljs-comment"># run dev-watch mode, serving example/index.html in the browser</span>
+yarn generate        <span class="hljs-comment"># generate all artifacts (compiles ts, webpack, docs and coverage)</span>
+yarn typings         <span class="hljs-comment"># install .d.ts dependencies (done on install)</span>
+yarn <span class="hljs-built_in">test</span>:unit       <span class="hljs-comment"># run the unit tests</span>
+yarn validate        <span class="hljs-comment"># runs validation scripts, including test, lint and coverage check</span>
+yarn lint            <span class="hljs-comment"># run tslint on this project</span>
+yarn doc             <span class="hljs-comment"># generate typedoc documentation</span>
 </code></pre>
 				<p>When installing this module, it adds a pre-push hook, that runs the <code>validate</code>
 				script before committing, so you can be sure that everything checks out.</p>
@@ -172,136 +274,6 @@ npm run doc             <span class="hljs-comment"># generate typedoc documentat
 				<p>View <a href="./AUTHORS.md">AUTHORS.md</a></p>
 				<h2 id="license">LICENSE</h2>
 				<p><a href="./LICENSE">MIT</a> © MediaMonks</p>
-				<h2 id="about-this-boilerplate">About this boilerplate</h2>
-				<p><strong>Remove this section when cloning this boilerplate to a real project!</strong></p>
-				<h3 id="folders">Folders</h3>
-				<p>This boilerplate contains the following folders:</p>
-				<ul>
-					<li><strong>/config</strong> - Contains the config files for karma and webpack</li>
-					<li><strong>/coverage</strong> - Contains the generated test code coverage, is sent to Code
-					Climage and Coveral.io.</li>
-					<li><strong>/dist</strong> - Contains the compiled code in different forms for manual usage.</li>
-					<li><strong>/docs</strong> - Contains the generated documentation by typedoc.</li>
-					<li><strong>/example</strong> - Can contain additional examples on how to use this module.</li>
-					<li><strong>/lib</strong> - Contains the built code from <code>src/lib</code>, will be published to npm.</li>
-					<li><strong>/node_modules</strong> - Contains the node modules generated by running <code>npm i</code>.</li>
-					<li><strong>/script</strong> - Contains scripts being called from npm scripts.</li>
-					<li><strong>/src</strong> - Contains the source code.</li>
-					<li><strong>/test</strong> - Contains the tests.</li>
-					<li><strong>/typings</strong> - Contains the .d.ts files generated by running <code>typings i</code>.</li>
-					<li><strong>/vendor</strong> - Can contain 3rd party code used in this project, when not
-					available on npm.</li>
-				</ul>
-				<h3 id="files">Files</h3>
-				<p>This boilerplate contains the following files:</p>
-				<ul>
-					<li><strong>/config/karma.conf.js</strong> - Configuration for Karma test runner.</li>
-					<li><strong>/config/webpack.conf.js</strong> - Configuration for Webpack builds.</li>
-					<li><strong>/script/webpack.js</strong> - Creates all the different webpack dist builds.</li>
-					<li><strong>.codeclimate.yml</strong> - The Code Climate configuration for this project.</li>
-					<li><strong>.editorconfig</strong> - Defines general formatting rules.</li>
-					<li><strong>.gitignore</strong> - These files should not end up in git.</li>
-					<li><strong>.npmignore</strong> - These files should not end up in npm.</li>
-					<li><strong>.travis.yml</strong> - Configuration for Travis CI.</li>
-					<li><strong>AUTHORS.md</strong> - Contains a list of all the authors that worked on this module.</li>
-					<li><strong>CONTRIBUTING.md</strong> - Contains information on how to contribute on this project.</li>
-					<li><strong>index.d.ts</strong> - The built Typescript definitions, referenced in the package.json.
-					Will be published to npm.</li>
-					<li><strong>index.d.ts</strong> - The built Typescript index, referenced in the package.json.
-					Will be published to npm.</li>
-					<li><strong>LICENSE</strong> - Our license file.</li>
-					<li><strong>package.json</strong> - To list the npm package information, all the dependencies,
-					and contains all the scripts that can be run.</li>
-					<li><strong>README.MD</strong> - This file, remove the about section when cloning this boilerplate.</li>
-					<li><strong>tsconfig.json</strong> - The TypeScript configuration file for this project.</li>
-					<li><strong>/test/tsconfig.json</strong> - The TypeScript configuration file for the tests.</li>
-					<li><strong>tslint.json</strong> - The linting rules for our TypeScript code.</li>
-					<li><strong>typings.json</strong> - The .d.ts dependencies for this project.</li>
-				</ul>
-				<h3 id="typescript">TypeScript</h3>
-				<p>Todo: describe TypeScript configuration and usage.</p>
-				<h3 id="karma">Karma</h3>
-				<p>Todo: describe Karma configuration and usage.</p>
-				<h3 id="tslint">TSLint</h3>
-				<p>Todo: describe TSLint configuration and usage.</p>
-				<h3 id="typedoc">TypeDoc</h3>
-				<p>Todo: describe TypeDoc configuration and usage.</p>
-				<h3 id="travis">Travis</h3>
-				<p>This project uses <a href="https://travis-ci.org">Travis</a> to build, test and
-				publish its code to npm. Travis is free for public Github repositories.</p>
-				<p>It runs on all commits, shows the build status for pull requests, and
-				publishes to npm when a new tag/release is created.</p>
-				<p>Travis only runs the <code>npm test</code> script, so have configured that script
-					to run everything we want Travis to check. Besides the unit tests, we
-				also run our validations and linters.</p>
-				<p>The travis configuration is placed in a <code>.travis.yml</code> file, consisting
-				of multiple sections.</p>
-				<ol>
-					<li>Defines the <code>node_js</code> <a href="https://docs.travis-ci.com/user/languages/javascript-with-nodejs">language</a>,
-					and tells travis on which node versions to run the process.</li>
-					<li>Before running, it needs to install some global dependencies, and
-					when it processes some coverage results.</li>
-					<li>It can do a <a href="https://docs.travis-ci.com/user/deployment/npm">npm deploy</a>,
-						telling it to keep the generated artifacts and only publish when run
-						on node 4 and when a tag was committed. It also contains the email
-					address and api key of the npm user.</li>
-					<li>Code Climate has a <a href="https://docs.travis-ci.com/user/code-climate/">travis plugin</a>
-					that automatically uploads the code coverage results.</li>
-				</ol>
-				<p>Because we want to keep the npm api key secret, we generate a secure
-					token with the <a href="https://github.com/travis-ci/travis.rb">Travis Client</a>,
-				a CLI written in ruby.</p>
-				<p>Before we can do this, we must make sure that the repository is added
-					to Travis, because Travis needs the repository owner/name info to make
-				sure the encrypted values only work for that repository.</p>
-				<ol>
-					<li><p>First you need to <a href="https://github.com/travis-ci/travis.rb#login">login</a>
-						with your travis account:</p>
-						<pre><code class="lang-sh">$ travis login
-</code></pre>
-						<p>To verify that you are logged in correctly you can check:</p>
-						<pre><code class="lang-sh">$ travis whoami
-</code></pre>
-					</li>
-					<li><p>Then make sure you are logged in to your npm account with the
-						<a href="https://docs.npmjs.com/cli/adduser">adduser</a> command:</p>
-						<pre><code class="lang-sh">$ npm adduser
-</code></pre>
-						<p>To verify that you are logged in correctly you can check:</p>
-						<pre><code class="lang-sh">$ npm whoami
-</code></pre>
-					</li>
-					<li><p>Now we need to grab your auth token so we can encrypt it:</p>
-						<pre><code class="lang-sh">$ cat ~/.npmrc
-
-<span class="hljs-comment"># outputs:</span>
-//registry.npmjs.org/:_authToken=&lt;your_auth_token&gt;
-</code></pre>
-					</li>
-					<li><p>Then let&#39;s encrypt that token using the travis <a href="https://github.com/travis-ci/travis.rb#encrypt">encrypt</a>
-						command:</p>
-						<pre><code class="lang-sh">$ travis encrypt &lt;your_auth_token&gt;
-Detected repository as mediamonks/seng-device-state-tracker, is this correct? |yes|
-Please add the following to your .travis.yml file:
-
-  secure: <span class="hljs-string">"YcN...Zb="</span>
-</code></pre>
-						<p>Now copy that last line, paste it into your <code>.travis.yml</code>, and make
-						sure it looks something like this:</p>
-						<pre><code class="lang-yml"><span class="hljs-attr">deploy:</span>
-<span class="hljs-attr">  provider:</span> <span class="hljs-string">npm</span>
-<span class="hljs-attr">  email:</span> <span class="hljs-string">"john@doe.com"</span>
-<span class="hljs-attr">  api_key:</span>
-<span class="hljs-attr">    secure:</span> <span class="hljs-string">"YcN...Zb="</span>
-</code></pre>
-					</li>
-				</ol>
-				<h3 id="code-climate">Code Climate</h3>
-				<p>Todo: describe Code Climate configuration and usage.</p>
-				<h3 id="coverall">Coverall</h3>
-				<p>Todo: describe Coverall configuration and usage.</p>
-				<h3 id="npm">NPM</h3>
-				<p>Todo: describe NPM configuration and usage.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -310,22 +282,31 @@ Please add the following to your .travis.yml file:
 					<li class="globals  ">
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_index_.html">"index"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_lib_dummy_.html">"lib/<wbr>Dummy"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_lib_example_.html">"lib/<wbr>Example"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_lib_iexample_.html">"lib/IExample"</a>
-					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/dataevent.html" class="tsd-kind-icon">Data<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/devicestateevent.html" class="tsd-kind-icon">Device<wbr>State<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/devicestatetracker.html" class="tsd-kind-icon">Device<wbr>State<wbr>Tracker</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/idevicestate.html" class="tsd-kind-icon">IDevice<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/idevicestateconfig.html" class="tsd-kind-icon">IDevice<wbr>State<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/idevicestatedata.html" class="tsd-kind-icon">IDevice<wbr>State<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/imediaquery.html" class="tsd-kind-icon">IMedia<wbr>Query</a>
+					</li>
 				</ul>
 			</nav>
 		</div>

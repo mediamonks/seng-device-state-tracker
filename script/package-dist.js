@@ -36,9 +36,7 @@ const createArchive = (archive, src, dst) =>
 		archive.pipe(output);
 
 		archive
-			.bulk([
-				{ expand: true, cwd: src, src: ['**/*.*'] }
-			])
+			.glob('**/*.*', { cwd: src, src: ['**/*.*'] })
 			.finalize();
 	})
 };
