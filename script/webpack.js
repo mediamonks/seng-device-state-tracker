@@ -13,11 +13,11 @@ const baseConfig = require('../config/webpack.config.dist');
 
 const umd = _.cloneDeep(baseConfig);
 umd.output.libraryTarget = 'umd';
-umd.output.filename = './dist/seng-boilerplate-umd.js';
+umd.output.filename = './dist/seng-device-state-tracker-umd.js';
 
 const umdMin = _.cloneDeep(baseConfig);
 umdMin.output.libraryTarget = 'umd';
-umdMin.output.filename = './dist/seng-boilerplate-umd.min.js';
+umdMin.output.filename = './dist/seng-device-state-tracker-umd.min.js';
 umdMin.plugins = umdMin.plugins.concat(
 	uglifyPluginSetting
 );
@@ -25,12 +25,12 @@ umdMin.plugins = umdMin.plugins.concat(
 const amd = _.cloneDeep(baseConfig);
 delete amd.output.library;
 amd.output.libraryTarget = 'amd';
-amd.output.filename = './dist/seng-boilerplate-amd.js';
+amd.output.filename = './dist/seng-device-state-tracker-amd.js';
 
 const cjs2 = _.cloneDeep(baseConfig);
 delete cjs2.output.library;
 cjs2.output.libraryTarget = 'commonjs2';
-cjs2.output.filename = './dist/seng-boilerplate-commonjs.js';
+cjs2.output.filename = './dist/seng-device-state-tracker-commonjs.js';
 
 const system = _.cloneDeep(baseConfig);
 delete system.output.library;
@@ -39,19 +39,19 @@ system.plugins.push(
 	new WebpackSystemRegister({
 		systemjsDeps: [
 		],
-		registerName: 'seng-boilerplate', // optional name that SystemJS will know this bundle as.
+		registerName: 'seng-device-state-tracker', // optional name that SystemJS will know this bundle as.
 	})
 );
-system.output.filename = './dist/seng-boilerplate-systemjs.js';
+system.output.filename = './dist/seng-device-state-tracker-systemjs.js';
 
 const browser = _.cloneDeep(baseConfig);
 browser.output.libraryTarget = 'var';
-browser.output.filename = './dist/seng-boilerplate.js';
+browser.output.filename = './dist/seng-device-state-tracker.js';
 
 
 const browserMin = _.cloneDeep(baseConfig);
 browserMin.output.libraryTarget = 'var';
-browserMin.output.filename = './dist/seng-boilerplate.min.js';
+browserMin.output.filename = './dist/seng-device-state-tracker.min.js';
 browserMin.plugins = browserMin.plugins.concat(
 	uglifyPluginSetting
 );

@@ -8,7 +8,7 @@ const serverURI = `webpack-dev-server/client?http://localhost:${port}/`;
 
 const webpackConfig = baseConfig;
 webpackConfig.output.libraryTarget = "var";
-webpackConfig.output.filename = "./dist/seng-boilerplate.js";
+webpackConfig.output.filename = "./dist/seng-device-state-tracker.js";
 webpackConfig.output.path = path.join(__dirname, '../dist');
 webpackConfig.entry = [serverURI, webpackConfig.entry];
 webpackConfig.devtool = 'source-map';
