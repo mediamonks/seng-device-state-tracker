@@ -82,6 +82,10 @@ export default class DeviceStateTracker extends EventDispatcher {
 		this.initTracking();
 	}
 
+	/**
+	 * Get current deviceState
+	 * @returns {IDeviceStateData}
+	 */
 	public get currentDeviceState():IDeviceStateData {
 		return {
 			state: this.currentState,
