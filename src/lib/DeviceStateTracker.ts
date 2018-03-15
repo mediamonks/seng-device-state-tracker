@@ -218,6 +218,7 @@ export default class DeviceStateTracker extends EventDispatcher {
 			  color: #fff;
 			  border-right: 1px solid #000;
 			  border-top: 1px solid #000;
+			  pointer-events: none;
 			}
 		`;
 
