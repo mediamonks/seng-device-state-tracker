@@ -208,16 +208,16 @@ export default class DeviceStateTracker extends EventDispatcher {
 		style.innerHTML = `
 			.seng-state-indicator {
 			  position: fixed;
-			  top: 0;
-			  right: 0;
-			  background-color: #17a2b8;
+			  bottom: 0;
+			  left: 0;
+			  background-color: #f00;
 			  padding: 4px;
 			  text-transform: uppercase;
-			  font: normal small-caps bold 12px/1 monospace;
-			  border-radius: 0 0 0 2px;
+			  font: normal small-caps 12px/1 monospace;
+			  border-radius: 0 3px 0 0;
 			  color: #fff;
-			  border-left: 1px solid #000;
-			  border-bottom: 1px solid #000;
+			  border-right: 1px solid #000;
+			  border-top: 1px solid #000;
 			}
 		`;
 
