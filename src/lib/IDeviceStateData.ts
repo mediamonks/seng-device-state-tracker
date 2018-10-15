@@ -1,6 +1,6 @@
 interface IDeviceStateData {
-	state: number;
-	name: string;
+  state: number;
+  name: string;
 }
 
 export default IDeviceStateData;

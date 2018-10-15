@@ -3,12 +3,11 @@ import DataEvent from './DataEvent';
 import IDeviceStateData from './IDeviceStateData';
 
 class DeviceStateEvent extends DataEvent<IDeviceStateData> {
-	public static STATE_UPDATE:string = EVENT_TYPE_PLACEHOLDER;
-	public data:IDeviceStateData;
+  public static STATE_UPDATE: string = EVENT_TYPE_PLACEHOLDER;
 
-	public clone():DeviceStateEvent {
-		return new DeviceStateEvent(this.type, this.data, this.bubbles, this.cancelable);
-	}
+  public clone(): DeviceStateEvent {
+    return new DeviceStateEvent(this.type, this.data, this.bubbles, this.cancelable);
+  }
 }
 
 generateEventTypes({ DeviceStateEvent });

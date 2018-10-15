@@ -4,36 +4,15 @@ import DeviceStateEvent from '../src/lib/DeviceStateEvent';
 // import { mediaQueries, DeviceState, WrongDeviceState, maxWidthMediaQueries } from './configMockJs';
 import { mediaQueries, DeviceState, WrongDeviceState, maxWidthMediaQueries } from './configMock';
 import { expect } from 'chai';
-import {} from 'mocha';
 import IDeviceStateConfig from '../src/lib/IDeviceStateConfig';
-const matchMediaMock = require('match-media-mock').create();
+// Use patched version as the original `match-media-mock` isn't published with patches
+const matchMediaMock = require('match-media-mock-patched').create();
 
 // Use matchMediaMock instead of window.matchMedia native
 window.matchMedia = <any> matchMediaMock;
 
-/**
- * Small helper function for populating media key of QueryList object see
- * https://github.com/azazdeaz/match-media-mock/issues/2 for more details.
- * Handles JavaScript and TypeScript 'enums'
- * @param deviceState
- * @param deviceStateTracker
- */
-const populateQueryListMediaKey = (deviceStateTracker) => {
-	const enumValues = Object.keys(DeviceState)
-		.reduce(
-			(accumulator:Array<string>, value) => {
-				if (isNaN(parseInt(value, 10))) {
-					accumulator.push(value);
-				}
-
-				return accumulator;
-			},
-			[]);
-
-	(<any> deviceStateTracker).queryList.forEach((mq, index) => mq.media = mediaQueries[enumValues[index]]);
-};
-
 describe('DeviceStateTracker', () => {
+
 	describe('#DeviceStateTracker should return the correct state for different Device States', () => {
 		const config:IDeviceStateConfig = {
 			mediaQueries,
@@ -41,8 +20,6 @@ describe('DeviceStateTracker', () => {
 		};
 
 		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(config);
-
-		populateQueryListMediaKey(deviceStateTracker);
 
 		it('should match X_SMALL', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 478 });
@@ -115,11 +92,9 @@ describe('DeviceStateTracker', () => {
 			showStateIndicator: true,
 		};
 
-		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(config);
-		// Lint will throw an error if not defined (workaround)
-		if (deviceStateTracker) {
-			expect(document.querySelector('.seng-state-indicator')!.tagName).to.equal('DIV');
-		}
+		new DeviceStateTracker(config);
+
+		expect(document.querySelector('.seng-state-indicator')!.tagName).to.equal('DIV');
 	});
 
 	it('should throw an error while calling construct with wrong enum', () => {
@@ -166,8 +141,6 @@ describe('DeviceStateTracker', () => {
 		};
 
 		const deviceStateTracker:DeviceStateTracker = new DeviceStateTracker(config);
-
-		populateQueryListMediaKey(deviceStateTracker);
 
 		it('should match X_SMALL', () => {
 			matchMediaMock.setConfig({ type: 'screen', width: 320 });
