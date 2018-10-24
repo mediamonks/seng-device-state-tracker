@@ -1,6 +1,5 @@
 import DeviceStateEvent from '../src/lib/DeviceStateEvent';
 import { expect } from 'chai';
-import {} from 'mocha';
 
 describe('#DeviceStateEvent', () => {
 	it('should clone itself', () => {
