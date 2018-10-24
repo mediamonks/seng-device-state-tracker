@@ -22,8 +22,7 @@ after_script:
 deploy:
   - provider: npm
     email: 'devmonk@mediamonks.com'
-    api_key:
-      secure: api_key: $NPM_TOKEN
+    api_key: $NPM_TOKEN
     on:
       tags: true
       node: '8'
